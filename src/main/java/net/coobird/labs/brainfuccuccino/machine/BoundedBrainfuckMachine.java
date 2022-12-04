@@ -1,0 +1,148 @@
+package net.coobird.labs.brainfuccuccino.machine;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+// brainfuck interpreter with bounds checks on the memory cell values.
+// memory cell spec: 8-bit signed byte with out-of-bounds protection.
+// memory cell count: 30,000
+// end-of-stream will write a 0 to the current memory cell on read.
+public class BoundedBrainfuckMachine {
+    private static final int SIZE = 30000;
+    private int programCounter = 0;
+    private int dataPointer = 0;
+    private final byte[] memory = new byte[SIZE];
+
+    private boolean isDebug = false;
+
+    private void printState(byte[] program) {
+        if (isDebug) {
+            System.out.printf("pc: %d   program[pc]: %c   dp: %d   memory[dp]: %d\n", programCounter, program[programCounter], dataPointer, memory[dataPointer]);
+        }
+    }
+
+    public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
+        while (programCounter < program.length) {
+            printState(program);
+            byte instruction = fetchInstruction(program);
+            switch (instruction) {
+                case '>':
+                    incrementPosition();
+                    break;
+                case '<':
+                    decrementPosition();
+                    break;
+                case '+':
+                    incrementValue();
+                    break;
+                case '-':
+                    decrementValue();
+                    break;
+                case '.':
+                    os.write(outputValue());
+                    break;
+                case ',':
+                    byte readByte = (byte) is.read();
+                    inputValue(readByte == -1 ? 0 : readByte);
+                    break;
+                case '[':
+                    if (readValue() == 0) {
+                        int depth = 0;
+                        printState(program);
+                        while (true) {
+                            programCounter++;
+                            if (program[programCounter] == '[') {
+                                depth++;
+                                continue;
+                            } else if (program[programCounter] == ']') {
+                                if (depth == 0) {
+                                    programCounter--;
+                                    break;
+                                } else {
+                                    depth--;
+                                }
+                            }
+                            if (programCounter == program.length - 1) {
+                                throw new ProgramRangeOutOfBoundsException("Couldn't find closing ']'");
+                            }
+                        }
+                    }
+                    break;
+                case ']':
+                    if (readValue() != 0) {
+                        int depth = 0;
+                        while (true) {
+                            programCounter--;
+                            printState(program);
+                            if (program[programCounter] == ']') {
+                                depth++;
+                            } else if (program[programCounter] == '[') {
+                                if (depth == 0) {
+                                    break;
+                                } else {
+                                    depth--;
+                                }
+                            }
+                            if (programCounter == 0) {
+                                throw new ProgramRangeOutOfBoundsException("Couldn't find opening '['");
+                            }
+                        }
+                    }
+                    break;
+                default:
+            }
+            programCounter++;
+        }
+    }
+
+    private void checkBounds(int programCounter) {
+        if (programCounter < 0 || programCounter >= SIZE) {
+            throw new ProgramRangeOutOfBoundsException(String.format("Out of bounds: <%s>", programCounter));
+        }
+    }
+
+    public void incrementPosition() {
+        checkBounds(++dataPointer);
+    }
+
+    public void decrementPosition() {
+        checkBounds(--dataPointer);
+    }
+
+    public void incrementValue() {
+        byte value = memory[dataPointer];
+        if (value == Byte.MAX_VALUE) {
+            throw new MemoryCellOutOfBoundsException(
+                    String.format("Value <%s> out of bounds at <%s>", value, dataPointer)
+            );
+        }
+        ++memory[dataPointer];
+    }
+
+    public void decrementValue() {
+        byte value = memory[dataPointer];
+        if (value == Byte.MIN_VALUE) {
+            throw new MemoryCellOutOfBoundsException(
+                    String.format("Value <%s> out of bounds at <%s>", value, dataPointer)
+            );
+        }
+        --memory[dataPointer];
+    }
+
+    public byte fetchInstruction(byte[] program) {
+        return program[programCounter];
+    }
+
+    public byte readValue() {
+        return memory[dataPointer];
+    }
+
+    public byte outputValue() {
+        return memory[dataPointer];
+    }
+
+    public void inputValue(byte value) {
+        memory[dataPointer] = value;
+    }
+}
