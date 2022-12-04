@@ -11,9 +11,11 @@ One key feature of Brainfuccuccino is that it conforms to the [Java Scripting AP
 This allows using the `ScriptEngine` interface to execute brainfuck programs:
 
 ```java
-Writer writer = new StringWriter();
 ScriptEngine bfScriptEngine = new ScriptEngineManager().getEngineByName("brainfuccucino");
 ScriptContext context = bfScriptEngine.getContext();
+
+// Set up a writer for the brainfuck program to output to.
+Writer writer = new StringWriter();
 context.setWriter(writer);
 
 // Hello World program from https://esolangs.org/wiki/Brainfuck (CC0 public domain)
