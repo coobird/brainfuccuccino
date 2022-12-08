@@ -62,19 +62,22 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
                     if (isCurrentMemoryValueZero()) {
                         int depth = 0;
                         printState(program);
+                        loop:
                         while (true) {
                             programCounter++;
-                            if (program[programCounter] == '[') {
-                                depth++;
-                                continue;
-                            } else if (program[programCounter] == ']') {
-                                if (depth == 0) {
-                                    programCounter--;
-                                    break;
-                                } else {
-                                    depth--;
-                                }
+                            switch (fetchInstruction(program)) {
+                                case BEGIN_LOOP:
+                                    depth++;
+                                    continue;
+                                case END_LOOP:
+                                    if (depth == 0) {
+                                        programCounter--;
+                                        break loop;
+                                    } else {
+                                        depth--;
+                                    }
                             }
+
                             if (programCounter == program.length - 1) {
                                 throw new ProgramRangeOutOfBoundsException("Couldn't find closing ']'");
                             }
@@ -84,18 +87,22 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
                 case END_LOOP:
                     if (!isCurrentMemoryValueZero()) {
                         int depth = 0;
+                        printState(program);
+                        loop:
                         while (true) {
                             programCounter--;
-                            printState(program);
-                            if (program[programCounter] == ']') {
-                                depth++;
-                            } else if (program[programCounter] == '[') {
-                                if (depth == 0) {
-                                    break;
-                                } else {
-                                    depth--;
-                                }
+                            switch (fetchInstruction(program)) {
+                                case END_LOOP:
+                                    depth++;
+                                    continue;
+                                case BEGIN_LOOP:
+                                    if (depth == 0) {
+                                        break loop;
+                                    } else {
+                                        depth--;
+                                    }
                             }
+
                             if (programCounter == 0) {
                                 throw new ProgramRangeOutOfBoundsException("Couldn't find opening '['");
                             }
