@@ -38,27 +38,27 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
     public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
         while (programCounter < program.length) {
             printState(program);
-            byte instruction = fetchInstruction(program);
+            Instructions instruction = fetchInstruction(program);
             switch (instruction) {
-                case '>':
+                case INCREMENT_POINTER:
                     incrementPosition();
                     break;
-                case '<':
+                case DECREMENT_POINTER:
                     decrementPosition();
                     break;
-                case '+':
+                case INCREMENT_VALUE:
                     incrementValue();
                     break;
-                case '-':
+                case DECREMENT_VALUE:
                     decrementValue();
                     break;
-                case '.':
+                case OUTPUT_VALUE:
                     writeToOutputStream(os, getValueFromMemory());
                     break;
-                case ',':
+                case INPUT_VALUE:
                     setValueToMemory(readFromInputStream(is));
                     break;
-                case '[':
+                case BEGIN_LOOP:
                     if (isCurrentMemoryValueZero()) {
                         int depth = 0;
                         printState(program);
@@ -81,7 +81,7 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
                         }
                     }
                     break;
-                case ']':
+                case END_LOOP:
                     if (!isCurrentMemoryValueZero()) {
                         int depth = 0;
                         while (true) {
@@ -131,8 +131,8 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
     /**
      * Fetch an instruction from the program at the current program counter.
      */
-    protected byte fetchInstruction(byte[] program) {
-        return program[programCounter];
+    protected Instructions fetchInstruction(byte[] program) {
+        return Instructions.getInstruction(program[programCounter]);
     }
 
     /**
