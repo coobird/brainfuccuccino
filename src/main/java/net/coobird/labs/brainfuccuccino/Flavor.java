@@ -1,5 +1,6 @@
 package net.coobird.labs.brainfuccuccino;
 
 public enum Flavor {
-    STANDARD
+    REGULAR,
+    SIGNED_BYTE_BOUNDED,
 }

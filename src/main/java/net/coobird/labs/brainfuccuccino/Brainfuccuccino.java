@@ -1,6 +1,8 @@
 package net.coobird.labs.brainfuccuccino;
 
 import net.coobird.labs.brainfuccuccino.machine.BoundedBrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.machine.SignedByteBoundedBrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,14 +25,27 @@ public final class Brainfuccuccino {
     }
 
     public void evaluate(byte[] program) throws IOException {
-        new BoundedBrainfuckMachine().evaluate(program, this.is, this.os);
+        BrainfuckMachine machine;
+        switch (this.flavor) {
+            case REGULAR:
+                machine = new BoundedBrainfuckMachine();
+                break;
+            case SIGNED_BYTE_BOUNDED:
+                machine = new SignedByteBoundedBrainfuckMachine();
+                break;
+            default:
+                machine = null;
+        }
+
+        machine.evaluate(program, this.is, this.os);
     }
+
     public void evaluate(String s) throws IOException {
         evaluate(s.getBytes(StandardCharsets.US_ASCII));
     }
 
     public static Brainfuccuccino customize() {
-        return new Brainfuccuccino(System.in, System.out, Flavor.STANDARD);
+        return new Brainfuccuccino(System.in, System.out, Flavor.REGULAR);
     }
 
     public Brainfuccuccino flavor(Flavor flavor) {
