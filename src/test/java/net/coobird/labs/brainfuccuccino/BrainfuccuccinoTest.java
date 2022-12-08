@@ -56,6 +56,25 @@ public class BrainfuccuccinoTest {
     }
 
     @Test
+    public void dots() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Brainfuccuccino.customize()
+                .attach(baos)
+                .evaluate(Utils.getScriptFromResources("dots.bf"));
+
+        StringBuilder expectedBuilder = new StringBuilder();
+        for (int lines = 0; lines < 10; lines++) {
+            for (int width = 0; width < 16; width++) {
+                expectedBuilder.append('*');
+            }
+            expectedBuilder.append('\n');
+        }
+
+        assertEquals(expectedBuilder.toString(), baos.toString());
+    }
+
+    @Test
     public void catInput() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
