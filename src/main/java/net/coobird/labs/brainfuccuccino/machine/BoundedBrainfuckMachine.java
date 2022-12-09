@@ -102,15 +102,15 @@ public class BoundedBrainfuckMachine implements BrainfuckMachine {
         }
     }
 
-    public void incrementPosition() {
+    private void incrementPosition() {
         checkBounds(++dataPointer);
     }
 
-    public void decrementPosition() {
+    private void decrementPosition() {
         checkBounds(--dataPointer);
     }
 
-    public void incrementValue() {
+    private void incrementValue() {
         byte value = memory[dataPointer];
         if (value == Byte.MAX_VALUE) {
             throw new MemoryCellOverflowException(
@@ -120,7 +120,7 @@ public class BoundedBrainfuckMachine implements BrainfuckMachine {
         ++memory[dataPointer];
     }
 
-    public void decrementValue() {
+    private void decrementValue() {
         byte value = memory[dataPointer];
         if (value == Byte.MIN_VALUE) {
             throw new MemoryCellOverflowException(
@@ -130,19 +130,19 @@ public class BoundedBrainfuckMachine implements BrainfuckMachine {
         --memory[dataPointer];
     }
 
-    public byte fetchInstruction(byte[] program) {
+    private byte fetchInstruction(byte[] program) {
         return program[programCounter];
     }
 
-    public byte readValue() {
+    private byte readValue() {
         return memory[dataPointer];
     }
 
-    public byte outputValue() {
+    private byte outputValue() {
         return memory[dataPointer];
     }
 
-    public void inputValue(byte value) {
+    private void inputValue(byte value) {
         memory[dataPointer] = value;
     }
 }

@@ -8,6 +8,7 @@ import java.io.OutputStream;
 public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckMachine<Byte> {
     private static final int SIZE = 30000;
 
+    @Override
     protected Byte[] init() {
         Byte[] memory = new Byte[SIZE];
         for (int i = 0; i < SIZE; i++) {
@@ -33,15 +34,18 @@ public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckM
         }
     }
 
-    public void incrementPosition() {
+    @Override
+    protected void incrementPosition() {
         checkBounds(++dataPointer);
     }
 
-    public void decrementPosition() {
+    @Override
+    protected void decrementPosition() {
         checkBounds(--dataPointer);
     }
 
-    public void incrementValue() {
+    @Override
+    protected void incrementValue() {
         byte value = memory[dataPointer];
         if (value == Byte.MAX_VALUE) {
             throw new MemoryCellOverflowException(
@@ -51,7 +55,8 @@ public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckM
         ++memory[dataPointer];
     }
 
-    public void decrementValue() {
+    @Override
+    protected void decrementValue() {
         byte value = memory[dataPointer];
         if (value == Byte.MIN_VALUE) {
             throw new MemoryCellOverflowException(
@@ -61,6 +66,7 @@ public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckM
         --memory[dataPointer];
     }
 
+    @Override
     protected boolean isCurrentMemoryValueZero() {
         return memory[dataPointer] == 0;
     }
