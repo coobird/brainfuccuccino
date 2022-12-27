@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 
-public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckMachine<Byte> {
+public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckMachine<Byte>
+        implements ValueOverflowChecker<Byte> {
+
     private static final int SIZE = 30000;
 
     @Override
@@ -45,24 +47,24 @@ public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckM
     }
 
     @Override
+    public Byte getMinimumValue() {
+        return Byte.MIN_VALUE;
+    }
+
+    @Override
+    public Byte getMaximumValue() {
+        return Byte.MAX_VALUE;
+    }
+
+    @Override
     protected void incrementValue() {
-        byte value = memory[dataPointer];
-        if (value == Byte.MAX_VALUE) {
-            throw new MemoryCellOverflowException(
-                    String.format("Value <%s> out of bounds at <%s>", value, dataPointer)
-            );
-        }
+        checkUpperBound(memory[dataPointer], dataPointer);
         ++memory[dataPointer];
     }
 
     @Override
     protected void decrementValue() {
-        byte value = memory[dataPointer];
-        if (value == Byte.MIN_VALUE) {
-            throw new MemoryCellOverflowException(
-                    String.format("Value <%s> out of bounds at <%s>", value, dataPointer)
-            );
-        }
+        checkLowerBound(memory[dataPointer], dataPointer);
         --memory[dataPointer];
     }
 
