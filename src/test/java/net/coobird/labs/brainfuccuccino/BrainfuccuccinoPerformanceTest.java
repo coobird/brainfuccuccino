@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+/**
+ * A performance test for the different "flavors" of the Brainfuck machines include in Brainfuccuccino.
+ */
 public class BrainfuccuccinoPerformanceTest {
     @Test
     public void dots() throws IOException {

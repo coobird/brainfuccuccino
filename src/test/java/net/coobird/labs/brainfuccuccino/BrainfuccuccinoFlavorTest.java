@@ -10,7 +10,9 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+/**
+ * Functionality tests for different flavors of Brainfuck machines include in Brainfuccuccino.
+ */
 public class BrainfuccuccinoFlavorTest {
 
     @ParameterizedTest
