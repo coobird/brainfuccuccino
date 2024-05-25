@@ -8,6 +8,22 @@
     <artifactId>brainfuccuccino</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://spdx.org/licenses/MIT.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Chris Kroells</name>
+            <email>coobirdnet@gmail.com</email>
+            <url>https://coobird.net</url>
+        </developer>
+    </developers>
+
     <build>
         <plugins>
             <plugin>
