@@ -26,6 +26,9 @@
 
 package net.coobird.labs.brainfuccuccino;
 
+import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine;
+import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachineCompiler;
+import net.coobird.labs.brainfuccuccino.vm.model.Instruction;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -49,5 +52,22 @@ public class BrainfuccuccinoPerformanceTest {
             long duration = System.currentTimeMillis() - startTime;
             System.out.println(String.format("flavor: %s   duration: %s", flavor, duration));
         }
+    }
+
+    @Test
+    public void dotsVirtualMachine() throws IOException {
+        String program = Utils.getScriptFromResources("dots.bf");
+
+        long startTime = System.currentTimeMillis();
+        Instruction[] instructions = new BrainfuckVirtualMachineCompiler().compile(program).toArray(new Instruction[0]);
+        for (int iteration = 0; iteration < 100000; iteration++) {
+            new BrainfuckVirtualMachine(
+                    instructions,
+                    null,
+                    new ByteArrayOutputStream()
+            ).execute();
+        }
+        long duration = System.currentTimeMillis() - startTime;
+        System.out.println(String.format("bvm duration: %s", duration));
     }
 }
