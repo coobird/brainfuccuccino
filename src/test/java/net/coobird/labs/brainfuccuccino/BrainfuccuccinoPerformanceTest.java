@@ -59,7 +59,10 @@ public class BrainfuccuccinoPerformanceTest {
         String program = Utils.getScriptFromResources("dots.bf");
 
         long startTime = System.currentTimeMillis();
-        Instruction[] instructions = new BrainfuckVirtualMachineCompiler().compile(program).toArray(new Instruction[0]);
+        Instruction[] instructions = new BrainfuckVirtualMachineCompiler()
+                .compile(program)
+                .toArray(new Instruction[0]);
+
         for (int iteration = 0; iteration < 100000; iteration++) {
             new BrainfuckVirtualMachine(
                     instructions,
@@ -76,7 +79,10 @@ public class BrainfuccuccinoPerformanceTest {
         String program = Utils.getScriptFromResources("dots.bf");
 
         long startTime = System.currentTimeMillis();
-        Instruction[] instructions = new BrainfuckVirtualMachineCompiler().compile2(program).toArray(new Instruction[0]);
+        Instruction[] instructions = new BrainfuckVirtualMachineCompiler()
+                .compile(program, 1)
+                .toArray(new Instruction[0]);
+
         for (int iteration = 0; iteration < 100000; iteration++) {
             new BrainfuckVirtualMachine(
                     instructions,

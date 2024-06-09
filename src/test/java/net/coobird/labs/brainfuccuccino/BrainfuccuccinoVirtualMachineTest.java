@@ -29,63 +29,77 @@ package net.coobird.labs.brainfuccuccino;
 import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine;
 import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachineCompiler;
 import net.coobird.labs.brainfuccuccino.vm.model.Instruction;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BrainfuccuccinoVirtualMachineTest {
     private final BrainfuckVirtualMachineCompiler compiler = new BrainfuckVirtualMachineCompiler();
 
-    @Test
-    public void printHelloWorld() throws IOException {
+    static Stream<Arguments> optimizationLevels() {
+        return Stream.of(
+                Arguments.of(0),
+                Arguments.of(1)
+        );
+    }
+
+    @ParameterizedTest(name = "optimizationLevel = {0}")
+    @MethodSource("optimizationLevels")
+    public void printHelloWorld(int optimizationLevel) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("hello_world.bf"));
+        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("hello_world.bf"), optimizationLevel);
 
         new BrainfuckVirtualMachine(instructions, null, baos).execute();
 
         assertEquals("Hello World!\n", baos.toString());
     }
 
-    @Test
-    public void printHelloWorldSignedBytes() throws IOException {
+    @ParameterizedTest(name = "optimizationLevel = {0}")
+    @MethodSource("optimizationLevels")
+    public void printHelloWorldSignedBytes(int optimizationLevel) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("signed_hello_world.bf"));
+        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("signed_hello_world.bf"), optimizationLevel);
 
         new BrainfuckVirtualMachine(instructions, null, baos).execute();
 
         assertEquals("Hello World!\n", baos.toString());
     }
 
-    @Test
-    public void loop() throws IOException {
+    @ParameterizedTest(name = "optimizationLevel = {0}")
+    @MethodSource("optimizationLevels")
+    public void loop(int optimizationLevel) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("loop.bf"));
+        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("loop.bf"), optimizationLevel);
 
         new BrainfuckVirtualMachine(instructions, null, baos).execute();
 
         assertEquals("*", baos.toString());
     }
 
-    @Test
-    public void nestedLoop() throws IOException {
+    @ParameterizedTest(name = "optimizationLevel = {0}")
+    @MethodSource("optimizationLevels")
+    public void nestedLoop(int optimizationLevel) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("nested_loop.bf"));
+        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("nested_loop.bf"), optimizationLevel);
 
         new BrainfuckVirtualMachine(instructions, null, baos).execute();
 
         assertEquals("*", baos.toString());
     }
 
-    @Test
-    public void dots() throws IOException {
+    @ParameterizedTest(name = "optimizationLevel = {0}")
+    @MethodSource("optimizationLevels")
+    public void dots(int optimizationLevel) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("dots.bf"));
+        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("dots.bf"), optimizationLevel);
 
         new BrainfuckVirtualMachine(instructions, null, baos).execute();
 
@@ -100,10 +114,11 @@ public class BrainfuccuccinoVirtualMachineTest {
         assertEquals(expectedBuilder.toString(), baos.toString());
     }
 
-    @Test
-    public void catInput() throws IOException {
+    @ParameterizedTest(name = "optimizationLevel = {0}")
+    @MethodSource("optimizationLevels")
+    public void catInput(int optimizationLevel) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("cat.bf"));
+        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("cat.bf"), optimizationLevel);
 
         new BrainfuckVirtualMachine(
                 instructions,
@@ -114,10 +129,11 @@ public class BrainfuccuccinoVirtualMachineTest {
         assertEquals("Hello World!", baos.toString());
     }
 
-    @Test
-    public void catInputUtf8() throws IOException {
+    @ParameterizedTest(name = "optimizationLevel = {0}")
+    @MethodSource("optimizationLevels")
+    public void catInputUtf8(int optimizationLevel) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("cat.bf"));
+        List<Instruction> instructions = compiler.compile(Utils.getScriptFromResources("cat.bf"), optimizationLevel);
 
         new BrainfuckVirtualMachine(
                 instructions,

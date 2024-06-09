@@ -38,6 +38,16 @@ import java.util.List;
 public class BrainfuckVirtualMachineCompiler {
     private static final int UNKNOWN_ADDRESS = -1;
 
+    public List<Instruction> compile(String program, int optimizationLevel) {
+        if (optimizationLevel == 0) {
+            return compile(program);
+        } else if (optimizationLevel > 0) {
+            return compileWithOptimization(program);
+        } else {
+            throw new IllegalArgumentException("Optimization level must be a positive value.");
+        }
+    }
+
     public List<Instruction> compile(String program) {
         int address = 0;
         // A stack used to find matching loop construct. Uses LinkedList as an implementation of Stack.
@@ -136,7 +146,7 @@ public class BrainfuckVirtualMachineCompiler {
         }
     }
 
-    public List<Instruction> compile2(String program) {
+    private List<Instruction> compileWithOptimization(String program) {
         int address = 0;
         // A stack used to find matching loop construct. Uses LinkedList as an implementation of Stack.
         Deque<Integer> returnAddressStack = new LinkedList<>();
