@@ -29,11 +29,15 @@ package net.coobird.labs.brainfuccuccino;
 import net.coobird.labs.brainfuccuccino.machine.BoundedBrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.SignedByteBoundedBrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine;
+import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachineCompiler;
+import net.coobird.labs.brainfuccuccino.vm.model.Instruction;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Brainfuccuccino is a Java scripting engine which allows
@@ -109,6 +113,13 @@ public final class Brainfuccuccino {
             case SIGNED_BYTE_BOUNDED:
                 machine = new SignedByteBoundedBrainfuckMachine();
                 break;
+            case INSTANT:
+                String programStr = new String(program, StandardCharsets.UTF_8);
+                List<Instruction> instructions = new BrainfuckVirtualMachineCompiler()
+                        .compile(programStr, 1);
+                new BrainfuckVirtualMachine(instructions, this.is, this.os).execute();
+                return;
+
             default:
                 machine = null;
         }
