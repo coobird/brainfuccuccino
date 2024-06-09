@@ -68,6 +68,23 @@ public class BrainfuccuccinoPerformanceTest {
             ).execute();
         }
         long duration = System.currentTimeMillis() - startTime;
-        System.out.println(String.format("bvm duration: %s", duration));
+        System.out.println(String.format("bvm1 duration: %s", duration));
+    }
+
+    @Test
+    public void dotsVirtualMachine2() throws IOException {
+        String program = Utils.getScriptFromResources("dots.bf");
+
+        long startTime = System.currentTimeMillis();
+        Instruction[] instructions = new BrainfuckVirtualMachineCompiler().compile2(program).toArray(new Instruction[0]);
+        for (int iteration = 0; iteration < 100000; iteration++) {
+            new BrainfuckVirtualMachine(
+                    instructions,
+                    null,
+                    new ByteArrayOutputStream()
+            ).execute();
+        }
+        long duration = System.currentTimeMillis() - startTime;
+        System.out.println(String.format("bvm2 duration: %s", duration));
     }
 }

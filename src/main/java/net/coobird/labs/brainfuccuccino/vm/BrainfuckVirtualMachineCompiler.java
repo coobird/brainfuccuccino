@@ -31,6 +31,7 @@ import net.coobird.labs.brainfuccuccino.vm.model.Opcode;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -81,6 +82,115 @@ public class BrainfuckVirtualMachineCompiler {
                     Instruction matchingInstruction = instructions.get(matchingOpening);
                     matchingInstruction.setOperand(address);
                     address++;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return instructions;
+    }
+
+    private static class RepeatedCharactersIterable implements Iterable<String> {
+        private final String s;
+
+        private RepeatedCharactersIterable(String s) {
+            this.s = s;
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return new Iterator<String>() {
+                private String nextSplit;
+                private int start = 0;
+                private final char[] chars = s.toCharArray();
+
+                private void findNext() {
+                    if (start == Integer.MAX_VALUE){
+                        nextSplit = null;
+                        return;
+                    }
+
+                    for (int i = start; i < chars.length - 1; i++) {
+                        if (chars[i] != chars[i + 1]) {
+                            nextSplit = s.substring(start, i + 1);
+                            start = i + 1;
+                            return;
+                        }
+                    }
+
+                    nextSplit = s.substring(start);
+                    start = Integer.MAX_VALUE;
+                }
+
+                @Override
+                public boolean hasNext() {
+                    findNext();
+                    return nextSplit != null;
+                }
+
+                @Override
+                public String next() {
+                    return nextSplit;
+                }
+            };
+        }
+    }
+
+    public List<Instruction> compile2(String program) {
+        int address = 0;
+        // A stack used to find matching loop construct. Uses LinkedList as an implementation of Stack.
+        Deque<Integer> returnAddressStack = new LinkedList<>();
+        // List of instructions. The address of the instruction is the position in the list.
+        List<Instruction> instructions = new ArrayList<>();
+
+        for (String split : new RepeatedCharactersIterable(program)) {
+            char bfInstruction = split.charAt(0);
+            int length = split.length();
+
+            switch (bfInstruction) {
+                case '>':
+                    instructions.add(new Instruction(Opcode.MADD, length));
+                    address++;
+                    break;
+                case '<':
+                    instructions.add(new Instruction(Opcode.MSUB, length));
+                    address++;
+                    break;
+                case '+':
+                    instructions.add(new Instruction(Opcode.ADD, length));
+                    address++;
+                    break;
+                case '-':
+                    instructions.add(new Instruction(Opcode.SUB, length));
+                    address++;
+                    break;
+                case '.':
+                    for (int i = 0; i < length; i++) {
+                        instructions.add(new Instruction(Opcode.WRITE));
+                        address++;
+                    }
+                    break;
+                case ',':
+                    for (int i = 0; i < length; i++) {
+                        instructions.add(new Instruction(Opcode.READ));
+                        address++;
+                    }
+                    break;
+                case '[':
+                    for (int i = 0; i < length; i++) {
+                        instructions.add(new Instruction(Opcode.JMZ, UNKNOWN_ADDRESS));
+                        returnAddressStack.push(address);
+                        address++;
+                    }
+                    break;
+                case ']':
+                    for (int i = 0; i < length; i++) {
+                        int matchingOpening = returnAddressStack.pop();
+                        instructions.add(new Instruction(Opcode.JMN, matchingOpening));
+                        Instruction matchingInstruction = instructions.get(matchingOpening);
+                        matchingInstruction.setOperand(address);
+                        address++;
+                    }
                     break;
                 default:
                     break;
