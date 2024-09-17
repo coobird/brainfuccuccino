@@ -34,12 +34,21 @@ import java.io.OutputStream;
  * A bounded brainfuck machine that uses a signed byte as the memory cell type.
  */
 public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckMachine<Byte> {
-    private static final int SIZE = 30000;
+    private static final int DEFAULT_SIZE = 30000;
+    private final int memorySize;
 
-    @Override
-    protected Byte[] init() {
-        Byte[] memory = new Byte[SIZE];
-        for (int i = 0; i < SIZE; i++) {
+    public SignedByteBoundedBrainfuckMachine() {
+        this(DEFAULT_SIZE);
+    }
+
+    public SignedByteBoundedBrainfuckMachine(int memorySize) {
+        super(init(memorySize));
+        this.memorySize = memorySize;
+    }
+
+    private static Byte[] init(int memorySize) {
+        Byte[] memory = new Byte[memorySize];
+        for (int i = 0; i < memorySize; i++) {
             memory[i] = (byte) 0;
         }
         return memory;
@@ -56,9 +65,9 @@ public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckM
         return readByte == -1 ? 0 : readByte;
     }
 
-    private void checkBounds(int programCounter) {
-        if (programCounter < 0 || programCounter >= SIZE) {
-            throw new ProgramRangeOutOfBoundsException(String.format("Out of bounds: <%s>", programCounter));
+    private void checkBounds(int memoryPosition) {
+        if (memoryPosition < 0 || memoryPosition >= this.memorySize) {
+            throw new MemoryRangeOutOfBoundsException(String.format("Memory cell out of bounds: <%s>", memoryPosition));
         }
     }
 

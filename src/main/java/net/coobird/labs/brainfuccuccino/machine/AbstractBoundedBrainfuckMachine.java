@@ -38,9 +38,11 @@ import java.io.OutputStream;
 public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMachine {
     protected int programCounter = 0;
     protected int dataPointer = 0;
-    protected final T[] memory = init();
+    protected final T[] memory;
 
-    protected abstract T[] init();
+    protected AbstractBoundedBrainfuckMachine(T[] memory) {
+        this.memory = memory;
+    }
 
     private boolean isDebug = false;
 

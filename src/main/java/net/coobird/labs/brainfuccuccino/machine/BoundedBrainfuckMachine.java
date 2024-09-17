@@ -122,9 +122,9 @@ public class BoundedBrainfuckMachine implements BrainfuckMachine {
         }
     }
 
-    private void checkBounds(int programCounter) {
-        if (programCounter < 0 || programCounter >= SIZE) {
-            throw new ProgramRangeOutOfBoundsException(String.format("Out of bounds: <%s>", programCounter));
+    private void checkBounds(int memoryPosition) {
+        if (memoryPosition < 0 || memoryPosition >= SIZE) {
+            throw new MemoryRangeOutOfBoundsException(String.format("Memory cell out of bounds: <%s>", memoryPosition));
         }
     }
 
