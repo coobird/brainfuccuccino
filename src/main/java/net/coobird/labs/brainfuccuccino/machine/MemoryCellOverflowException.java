@@ -26,6 +26,9 @@
 
 package net.coobird.labs.brainfuccuccino.machine;
 
+/**
+ * An exception thrown when the value of a memory cell overflows (or underflows.)
+ */
 public class MemoryCellOverflowException extends RuntimeException {
     public MemoryCellOverflowException(String s) {
         super(s);

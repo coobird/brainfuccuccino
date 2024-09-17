@@ -26,6 +26,9 @@
 
 package net.coobird.labs.brainfuccuccino.machine;
 
+/**
+ * An exception thrown when the bounded brainfuck machine goes beyond the bounds of the program.
+ */
 public class ProgramRangeOutOfBoundsException extends RuntimeException {
     public ProgramRangeOutOfBoundsException(String s) {
         super(s);

@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-
+/**
+ * A bounded brainfuck machine that uses a signed byte as the memory cell type.
+ */
 public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckMachine<Byte> {
     private static final int SIZE = 30000;
 
