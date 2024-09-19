@@ -40,5 +40,5 @@ public interface MachineStateListener<T> {
      * @param dp Data pointer.
      * @param content Content of memory at the data pointer.
      */
-    void nextInstruction(int pc, byte pi, Instructions instruction, int dp, T content);
+    void nextInstruction(int pc, byte pi, Instruction instruction, int dp, T content);
 }

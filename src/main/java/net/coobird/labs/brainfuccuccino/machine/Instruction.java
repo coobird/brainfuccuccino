@@ -26,7 +26,7 @@
 
 package net.coobird.labs.brainfuccuccino.machine;
 
-public enum Instructions {
+public enum Instruction {
     INCREMENT_POINTER,
     DECREMENT_POINTER,
     INCREMENT_VALUE,
@@ -37,7 +37,7 @@ public enum Instructions {
     END_LOOP,
     NOP;
 
-    public static Instructions getInstruction(byte value) {
+    public static Instruction getInstruction(byte value) {
         switch (value) {
             case '>':
                 return INCREMENT_POINTER;

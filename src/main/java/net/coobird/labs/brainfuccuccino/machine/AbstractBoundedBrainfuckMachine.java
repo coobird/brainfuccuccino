@@ -63,7 +63,7 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
     @Override
     public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
         while (programCounter < program.length) {
-            Instructions instruction = fetchInstruction(program);
+            Instruction instruction = fetchInstruction(program);
             if (listener != null) {
                 listener.nextInstruction(programCounter, program[programCounter], instruction, dataPointer, memory[dataPointer]);
             }
@@ -164,8 +164,8 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
     /**
      * Fetch an instruction from the program at the current program counter.
      */
-    protected Instructions fetchInstruction(byte[] program) {
-        return Instructions.getInstruction(program[programCounter]);
+    protected Instruction fetchInstruction(byte[] program) {
+        return Instruction.getInstruction(program[programCounter]);
     }
 
     /**
