@@ -33,10 +33,17 @@ System.out.println(writer.toString());
 
 Another straightforward option to run brainfuck programs is to call Brainfuccuccino directly.
 
-The following is a `cat` or a program that echoes back standard input to standard output.
+The following is a full example of `cat` or a program that echoes back standard input to standard output.
 
 ```java
-Brainfuccuccino.brew(",[.,]");
+import java.io.IOException;
+
+public class Cat {
+    public static void main(String[] args) throws IOException {
+        // Exit by sending an end-of-transmission (Ctrl-D) or terminating the application.
+        Brainfuccuccino.brew(",[.,]");
+    }
+}
 ```
 
 `Brainfuccuccino.brew` attaches `System.in` and `System.out` to the input and output (respectively) of the brainfuck program automatically.
