@@ -29,6 +29,7 @@ package net.coobird.labs.brainfuccuccino.machine;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 /**
  * A bounded brainfuck machine that uses a signed byte as the memory cell type.
@@ -57,9 +58,7 @@ public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckM
 
     private static Byte[] init(int memorySize) {
         Byte[] memory = new Byte[memorySize];
-        for (int i = 0; i < memorySize; i++) {
-            memory[i] = (byte) 0;
-        }
+        Arrays.fill(memory, (byte) 0);
         return memory;
     }
 
