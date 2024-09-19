@@ -46,6 +46,15 @@ public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckM
         this.memorySize = memorySize;
     }
 
+    public SignedByteBoundedBrainfuckMachine(MachineStateListener<Byte> listener) {
+        this(DEFAULT_SIZE, listener);
+    }
+
+    public SignedByteBoundedBrainfuckMachine(int memorySize, MachineStateListener<Byte> listener) {
+        super(init(memorySize), listener);
+        this.memorySize = memorySize;
+    }
+
     private static Byte[] init(int memorySize) {
         Byte[] memory = new Byte[memorySize];
         for (int i = 0; i < memorySize; i++) {

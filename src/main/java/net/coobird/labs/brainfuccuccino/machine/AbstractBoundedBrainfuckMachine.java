@@ -39,17 +39,15 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
     protected int programCounter = 0;
     protected int dataPointer = 0;
     protected final T[] memory;
+    private final MachineStateListener<T> listener;
 
     protected AbstractBoundedBrainfuckMachine(T[] memory) {
-        this.memory = memory;
+        this(memory, null);
     }
 
-    private boolean isDebug = false;
-
-    private void printState(byte[] program) {
-        if (isDebug) {
-            System.out.printf("pc: %d   program[pc]: %c   dp: %d   memory[dp]: %d\n", programCounter, program[programCounter], dataPointer, memory[dataPointer]);
-        }
+    protected AbstractBoundedBrainfuckMachine(T[] memory, MachineStateListener<T> listener) {
+        this.memory = memory;
+        this.listener = listener;
     }
 
     /**
@@ -65,8 +63,10 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
     @Override
     public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
         while (programCounter < program.length) {
-            printState(program);
             Instructions instruction = fetchInstruction(program);
+            if (listener != null) {
+                listener.nextInstruction(programCounter, program[programCounter], instruction, dataPointer, memory[dataPointer]);
+            }
             switch (instruction) {
                 case INCREMENT_POINTER:
                     incrementPosition();
@@ -89,7 +89,6 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
                 case BEGIN_LOOP:
                     if (isCurrentMemoryValueZero()) {
                         int depth = 0;
-                        printState(program);
                         loop:
                         while (true) {
                             programCounter++;
@@ -115,7 +114,6 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
                 case END_LOOP:
                     if (!isCurrentMemoryValueZero()) {
                         int depth = 0;
-                        printState(program);
                         loop:
                         while (true) {
                             programCounter--;
