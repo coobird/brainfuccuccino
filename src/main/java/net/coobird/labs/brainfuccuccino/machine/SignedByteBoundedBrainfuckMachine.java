@@ -34,7 +34,10 @@ import java.util.Arrays;
 /**
  * A bounded brainfuck machine that uses a signed byte as the memory cell type.
  */
-public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckMachine<Byte> {
+public class SignedByteBoundedBrainfuckMachine
+        extends AbstractBoundedBrainfuckMachine<Byte>
+        implements Introspectable<Byte> {
+
     private static final int DEFAULT_SIZE = 30000;
     private final int memorySize;
 
@@ -114,5 +117,10 @@ public class SignedByteBoundedBrainfuckMachine extends AbstractBoundedBrainfuckM
     @Override
     protected boolean isCurrentMemoryValueZero() {
         return memory[dataPointer] == 0;
+    }
+
+    @Override
+    public MachineState<Byte> getState() {
+        return new MachineState<>(programCounter, dataPointer, memory);
     }
 }

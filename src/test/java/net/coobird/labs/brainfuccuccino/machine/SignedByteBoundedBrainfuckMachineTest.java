@@ -26,12 +26,14 @@
 
 package net.coobird.labs.brainfuccuccino.machine;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -58,5 +60,16 @@ public class SignedByteBoundedBrainfuckMachineTest {
                 MemoryRangeOutOfBoundsException.class,
                 () -> machine.evaluate(program.getBytes(), null, null)
         );
+    }
+
+    @Test
+    public void introspectionTest() throws IOException {
+        SignedByteBoundedBrainfuckMachine machine = new SignedByteBoundedBrainfuckMachine(3);
+        machine.evaluate("+>++>+++".getBytes(), null, null);
+
+        Introspectable.MachineState<Byte> state = machine.getState();
+        assertEquals(8, state.getProgramCounter());
+        assertEquals(2, state.getDataPointer());
+        assertArrayEquals(new Byte[] {1, 2, 3}, state.getMemory());
     }
 }
