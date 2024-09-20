@@ -39,6 +39,9 @@ public class BrainfuckVirtualMachine {
     private int dataPointer = 0;
     private final byte[] memory = new byte[SIZE];
 
+    private long instructionsExecuted = 0;
+    private long programCounterChanges = 0;
+
     private final Instruction[] instructions;
     private final InputStream is;
     private final OutputStream os;
@@ -68,23 +71,28 @@ public class BrainfuckVirtualMachine {
     public void execute() throws IOException {
         while (programCounter < instructions.length) {
             Instruction instruction = instructions[programCounter];
+            instructionsExecuted++;
             int operand = instruction.getOperand();
             switch (instruction.getOpcode()) {
                 case MADD:
                     dataPointer += operand;
                     programCounter++;
+                    programCounterChanges++;
                     break;
                 case MSUB:
                     dataPointer -= operand;
                     programCounter++;
+                    programCounterChanges++;
                     break;
                 case ADD:
                     memory[dataPointer] += operand;
                     programCounter++;
+                    programCounterChanges++;
                     break;
                 case SUB:
                     memory[dataPointer] -= operand;
                     programCounter++;
+                    programCounterChanges++;
                     break;
                 case READ:
                     byte inData = (byte) is.read();
@@ -93,25 +101,31 @@ public class BrainfuckVirtualMachine {
                     }
                     memory[dataPointer] = inData;
                     programCounter++;
+                    programCounterChanges++;
                     break;
                 case WRITE:
                     byte outData = memory[dataPointer];
                     os.write(outData);
                     programCounter++;
+                    programCounterChanges++;
                     break;
                 case JMN:
                     if (memory[dataPointer] != 0) {
                         programCounter = operand;
+                        programCounterChanges++;
                         break;
                     }
                     programCounter++;
+                    programCounterChanges++;
                     break;
                 case JMZ:
                     if (memory[dataPointer] == 0) {
                         programCounter = operand;
+                        programCounterChanges++;
                         break;
                     }
                     programCounter++;
+                    programCounterChanges++;
                     break;
                 default:
                     throw new IllegalStateException("Unknown instruction: " + instruction);
