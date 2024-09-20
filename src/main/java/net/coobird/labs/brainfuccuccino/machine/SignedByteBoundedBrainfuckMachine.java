@@ -123,4 +123,9 @@ public class SignedByteBoundedBrainfuckMachine
     public MachineState<Byte> getState() {
         return new MachineState<>(programCounter, dataPointer, memory);
     }
+
+    @Override
+    public ExecutionStatistics getStatistics() {
+        return new ExecutionStatistics(instructionsExecuted, nopInstructions, programCounterChanges);
+    }
 }

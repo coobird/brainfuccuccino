@@ -41,6 +41,10 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
     protected final T[] memory;
     private final MachineStateListener<T> listener;
 
+    protected long instructionsExecuted = 0;
+    protected long nopInstructions = 0;
+    protected long programCounterChanges = 0;
+
     protected AbstractBoundedBrainfuckMachine(T[] memory) {
         this(memory, null);
     }
@@ -92,6 +96,7 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
                         loop:
                         while (true) {
                             programCounter++;
+                            programCounterChanges++;
                             switch (fetchInstruction(program)) {
                                 case BEGIN_LOOP:
                                     depth++;
@@ -99,6 +104,7 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
                                 case END_LOOP:
                                     if (depth == 0) {
                                         programCounter--;
+                                        programCounterChanges++;
                                         break loop;
                                     } else {
                                         depth--;
@@ -117,6 +123,7 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
                         loop:
                         while (true) {
                             programCounter--;
+                            programCounterChanges++;
                             switch (fetchInstruction(program)) {
                                 case END_LOOP:
                                     depth++;
@@ -136,7 +143,11 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
                     }
                     break;
                 default:
+                    nopInstructions++;
+                    instructionsExecuted--;
             }
+            instructionsExecuted++;
+            programCounterChanges++;
             programCounter++;
         }
     }

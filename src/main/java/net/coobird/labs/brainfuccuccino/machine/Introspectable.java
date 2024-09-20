@@ -35,6 +35,7 @@ import java.util.Arrays;
 public interface Introspectable<T> {
 
     MachineState<T> getState();
+    ExecutionStatistics getStatistics();
 
     /**
      * The brainfuck machine state.

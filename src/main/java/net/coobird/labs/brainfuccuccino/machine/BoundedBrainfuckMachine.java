@@ -40,6 +40,10 @@ public class BoundedBrainfuckMachine implements BrainfuckMachine {
     private int dataPointer = 0;
     private final byte[] memory = new byte[SIZE];
 
+    private long instructionsExecuted = 0;
+    private long nopInstructions = 0;
+    private long programCounterChanges = 0;
+
     private boolean isDebug = false;
 
     private void printState(byte[] program) {
@@ -78,12 +82,14 @@ public class BoundedBrainfuckMachine implements BrainfuckMachine {
                         printState(program);
                         while (true) {
                             programCounter++;
+                            programCounterChanges++;
                             if (program[programCounter] == '[') {
                                 depth++;
                                 continue;
                             } else if (program[programCounter] == ']') {
                                 if (depth == 0) {
                                     programCounter--;
+                                    programCounterChanges++;
                                     break;
                                 } else {
                                     depth--;
@@ -100,6 +106,7 @@ public class BoundedBrainfuckMachine implements BrainfuckMachine {
                         int depth = 0;
                         while (true) {
                             programCounter--;
+                            programCounterChanges++;
                             printState(program);
                             if (program[programCounter] == ']') {
                                 depth++;
@@ -117,7 +124,11 @@ public class BoundedBrainfuckMachine implements BrainfuckMachine {
                     }
                     break;
                 default:
+                    nopInstructions++;
+                    instructionsExecuted--;
             }
+            instructionsExecuted++;
+            programCounterChanges++;
             programCounter++;
         }
     }
