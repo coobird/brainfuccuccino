@@ -50,7 +50,7 @@ public class BrainfuccuccinoPerformanceTest {
                         .evaluate(program);
             }
             long duration = System.currentTimeMillis() - startTime;
-            System.out.println(String.format("flavor: %s   duration: %s", flavor, duration));
+            System.out.printf("flavor: %s   duration: %s%n", flavor, duration);
         }
     }
 
@@ -71,11 +71,11 @@ public class BrainfuccuccinoPerformanceTest {
             ).execute();
         }
         long duration = System.currentTimeMillis() - startTime;
-        System.out.println(String.format("bvm1 duration: %s", duration));
+        System.out.printf("bvm-no-optimization duration: %s%n", duration);
     }
 
     @Test
-    public void dotsVirtualMachine2() throws IOException {
+    public void dotsVirtualMachineWithOptimization() throws IOException {
         String program = Utils.getScriptFromResources("dots.bf");
 
         long startTime = System.currentTimeMillis();
@@ -91,6 +91,6 @@ public class BrainfuccuccinoPerformanceTest {
             ).execute();
         }
         long duration = System.currentTimeMillis() - startTime;
-        System.out.println(String.format("bvm2 duration: %s", duration));
+        System.out.printf("bvm-with-optimization duration: %s%n", duration);
     }
 }
