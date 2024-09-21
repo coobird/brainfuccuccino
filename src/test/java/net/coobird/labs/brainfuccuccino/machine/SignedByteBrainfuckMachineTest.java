@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SignedByteBoundedBrainfuckMachineTest {
+public class SignedByteBrainfuckMachineTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"+.", ">+.", ">>+."})
@@ -81,6 +81,17 @@ public class SignedByteBoundedBrainfuckMachineTest {
         assertEquals(8, state.getProgramCounter());
         assertEquals(2, state.getDataPointer());
         assertArrayEquals(new Byte[] {1, 2, 3}, state.getMemory());
+    }
+
+    @Test
+    public void inspectionTest() throws IOException {
+        SignedByteBrainfuckMachine machine = new SignedByteBrainfuckMachine(3);
+        machine.evaluate("+>++>+++".getBytes(), null, null);
+
+        MachineMetrics metrics = machine.getStatistics();
+        assertEquals(8, metrics.getInstructionsExecuted());
+        assertEquals(0, metrics.getInstructionsSkipped());
+        assertEquals(8, metrics.getProgramCounterChanges());
     }
 
     @DisabledIfSystemProperty(named = "java.awt.headless", matches = "true")
