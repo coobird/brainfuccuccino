@@ -26,7 +26,7 @@
 
 package net.coobird.labs.brainfuccuccino;
 
-import net.coobird.labs.brainfuccuccino.machine.BoundedBrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.machine.ClassicBrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.SignedByteBrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine;
@@ -108,7 +108,7 @@ public final class Brainfuccuccino {
         BrainfuckMachine machine;
         switch (this.flavor) {
             case REGULAR:
-                machine = new BoundedBrainfuckMachine();
+                machine = new ClassicBrainfuckMachine();
                 break;
             case SIGNED_BYTE:
                 machine = new SignedByteBrainfuckMachine();

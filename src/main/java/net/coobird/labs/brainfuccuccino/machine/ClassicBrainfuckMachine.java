@@ -30,11 +30,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-// brainfuck interpreter with bounds checks on the memory cell values.
-// memory cell spec: 8-bit signed byte with overflow protection.
-// memory cell count: 30,000
-// end-of-stream will write a 0 to the current memory cell on read.
-public class BoundedBrainfuckMachine implements BrainfuckMachine {
+/**
+ * A classic brainfuck interpreter.
+ * Memory cells are signed bytes permitting over- and underflow.
+ * Memory cells are bounded at 30000 cells.
+ * End-of-stream will write a {@code 0} to the current memory cell on read.
+ */
+public class ClassicBrainfuckMachine implements BrainfuckMachine {
     private static final int SIZE = 30000;
     private int programCounter = 0;
     private int dataPointer = 0;
@@ -148,22 +150,10 @@ public class BoundedBrainfuckMachine implements BrainfuckMachine {
     }
 
     private void incrementValue() {
-        byte value = memory[dataPointer];
-        if (value == Byte.MAX_VALUE) {
-            throw new MemoryCellOverflowException(
-                    String.format("Value <%s> overflow at <%s>", value, dataPointer)
-            );
-        }
         ++memory[dataPointer];
     }
 
     private void decrementValue() {
-        byte value = memory[dataPointer];
-        if (value == Byte.MIN_VALUE) {
-            throw new MemoryCellOverflowException(
-                    String.format("Value <%s> underflow at <%s>", value, dataPointer)
-            );
-        }
         --memory[dataPointer];
     }
 
