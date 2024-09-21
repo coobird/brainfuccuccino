@@ -52,7 +52,7 @@ public class SignedByteBoundedBrainfuckMachineTest {
     @ParameterizedTest
     @ValueSource(strings = {"+.", ">+.", ">>+."})
     public void whenMemoryPositionWithinSizeThenCorrectValueInMemoryCell(String program) throws IOException {
-        BrainfuckMachine machine = new SignedByteBoundedBrainfuckMachine(3);
+        BrainfuckMachine machine = new SignedByteBrainfuckMachine(3);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         machine.evaluate(program.getBytes(), null, os);
@@ -65,7 +65,7 @@ public class SignedByteBoundedBrainfuckMachineTest {
     @ParameterizedTest
     @ValueSource(strings = {"<", ">>>"})
     public void whenMemoryOutOfRangeThenExceptionThrown(String program) {
-        BrainfuckMachine machine = new SignedByteBoundedBrainfuckMachine(3);
+        BrainfuckMachine machine = new SignedByteBrainfuckMachine(3);
         assertThrows(
                 MemoryRangeOutOfBoundsException.class,
                 () -> machine.evaluate(program.getBytes(), null, null)
@@ -74,7 +74,7 @@ public class SignedByteBoundedBrainfuckMachineTest {
 
     @Test
     public void introspectionTest() throws IOException {
-        SignedByteBoundedBrainfuckMachine machine = new SignedByteBoundedBrainfuckMachine(3);
+        SignedByteBrainfuckMachine machine = new SignedByteBrainfuckMachine(3);
         machine.evaluate("+>++>+++".getBytes(), null, null);
 
         MachineState<Byte> state = machine.getState();
@@ -97,7 +97,7 @@ public class SignedByteBoundedBrainfuckMachineTest {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
 
-        final SignedByteBoundedBrainfuckMachine machine = new SignedByteBoundedBrainfuckMachine(10);
+        final SignedByteBrainfuckMachine machine = new SignedByteBrainfuckMachine(10);
 
         AtomicBoolean isRunning = new AtomicBoolean(true);
         new Thread(() -> {

@@ -35,7 +35,7 @@ import java.io.OutputStream;
  * The program is bounded (finite).
  * @param <T>   Type used by the memory cells in the brainfuck machine.
  */
-public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMachine {
+public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
     protected int programCounter = 0;
     protected int dataPointer = 0;
     protected final T[] memory;
@@ -45,11 +45,11 @@ public abstract class AbstractBoundedBrainfuckMachine<T> implements BrainfuckMac
     protected long nopInstructions = 0;
     protected long programCounterChanges = 0;
 
-    protected AbstractBoundedBrainfuckMachine(T[] memory) {
+    protected AbstractBrainfuckMachine(T[] memory) {
         this(memory, null);
     }
 
-    protected AbstractBoundedBrainfuckMachine(T[] memory, MachineStateListener<T> listener) {
+    protected AbstractBrainfuckMachine(T[] memory, MachineStateListener<T> listener) {
         this.memory = memory;
         this.listener = listener;
     }

@@ -27,7 +27,7 @@
 package net.coobird.labs.brainfuccuccino;
 
 import net.coobird.labs.brainfuccuccino.machine.BoundedBrainfuckMachine;
-import net.coobird.labs.brainfuccuccino.machine.SignedByteBoundedBrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.machine.SignedByteBrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine;
 import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachineCompiler;
@@ -110,8 +110,8 @@ public final class Brainfuccuccino {
             case REGULAR:
                 machine = new BoundedBrainfuckMachine();
                 break;
-            case SIGNED_BYTE_BOUNDED:
-                machine = new SignedByteBoundedBrainfuckMachine();
+            case SIGNED_BYTE:
+                machine = new SignedByteBrainfuckMachine();
                 break;
             case INSTANT:
                 String programStr = new String(program, StandardCharsets.UTF_8);

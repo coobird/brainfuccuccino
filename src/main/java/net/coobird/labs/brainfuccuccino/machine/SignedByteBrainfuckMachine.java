@@ -34,27 +34,27 @@ import java.util.Arrays;
 /**
  * A bounded brainfuck machine that uses a signed byte as the memory cell type.
  */
-public class SignedByteBoundedBrainfuckMachine
-        extends AbstractBoundedBrainfuckMachine<Byte>
+public class SignedByteBrainfuckMachine
+        extends AbstractBrainfuckMachine<Byte>
         implements Introspectable<Byte> {
 
     private static final int DEFAULT_SIZE = 30000;
     private final int memorySize;
 
-    public SignedByteBoundedBrainfuckMachine() {
+    public SignedByteBrainfuckMachine() {
         this(DEFAULT_SIZE);
     }
 
-    public SignedByteBoundedBrainfuckMachine(int memorySize) {
+    public SignedByteBrainfuckMachine(int memorySize) {
         super(init(memorySize));
         this.memorySize = memorySize;
     }
 
-    public SignedByteBoundedBrainfuckMachine(MachineStateListener<Byte> listener) {
+    public SignedByteBrainfuckMachine(MachineStateListener<Byte> listener) {
         this(DEFAULT_SIZE, listener);
     }
 
-    public SignedByteBoundedBrainfuckMachine(int memorySize, MachineStateListener<Byte> listener) {
+    public SignedByteBrainfuckMachine(int memorySize, MachineStateListener<Byte> listener) {
         super(init(memorySize), listener);
         this.memorySize = memorySize;
     }
