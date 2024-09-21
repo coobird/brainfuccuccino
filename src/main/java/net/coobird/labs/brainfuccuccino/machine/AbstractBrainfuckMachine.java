@@ -64,10 +64,25 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
      */
     protected abstract T readFromInputStream(InputStream is) throws IOException;
 
+    /**
+     * Translate a byte-based program into {@link Instruction}s.
+     */
+    protected Instruction[] bytesToInstructions(byte[] program) {
+        Instruction[] instructions = new Instruction[program.length];
+        for (int i = 0; i < program.length; i++) {
+            instructions[i] = Instruction.getInstruction(program[i]);
+        }
+        return instructions;
+    }
+
     @Override
     public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
-        while (programCounter < program.length) {
-            Instruction instruction = fetchInstruction(program);
+        // Pre-translate program into instructions.
+        // This will reduce interpretation time.
+        Instruction[] instructions = bytesToInstructions(program);
+
+        while (programCounter < instructions.length) {
+            Instruction instruction = instructions[programCounter];
             if (listener != null) {
                 listener.nextInstruction(programCounter, program[programCounter], instruction, dataPointer, memory[dataPointer]);
             }
@@ -97,7 +112,7 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
                         while (true) {
                             programCounter++;
                             programCounterChanges++;
-                            switch (fetchInstruction(program)) {
+                            switch (instructions[programCounter]) {
                                 case BEGIN_LOOP:
                                     depth++;
                                     continue;
@@ -124,7 +139,7 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
                         while (true) {
                             programCounter--;
                             programCounterChanges++;
-                            switch (fetchInstruction(program)) {
+                            switch (instructions[programCounter]) {
                                 case END_LOOP:
                                     depth++;
                                     continue;
@@ -171,13 +186,6 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
      * Decrement value in the current memory cell.
      */
     protected abstract void decrementValue();
-
-    /**
-     * Fetch an instruction from the program at the current program counter.
-     */
-    protected Instruction fetchInstruction(byte[] program) {
-        return Instruction.getInstruction(program[programCounter]);
-    }
 
     /**
      * Returns whether the current memory cell contains zero.
