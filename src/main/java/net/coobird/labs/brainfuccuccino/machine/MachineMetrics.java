@@ -26,11 +26,35 @@
 
 package net.coobird.labs.brainfuccuccino.machine;
 
-/**
- * Interface that indicates that a brainfuck machine's state can be inspected.
- * @param <T> The memory cell type of the brainfuck machine.
- */
-public interface Introspectable<T> {
-    MachineState<T> getState();
-    MachineMetrics getStatistics();
+public class MachineMetrics {
+    private final long instructionsExecuted;
+    private final long instructionsSkipped;
+    private final long programCounterChanges;
+
+    public MachineMetrics(long instructionsExecuted, long instructionsSkipped, long programCounterChanges) {
+        this.instructionsExecuted = instructionsExecuted;
+        this.instructionsSkipped = instructionsSkipped;
+        this.programCounterChanges = programCounterChanges;
+    }
+
+    public long getInstructionsExecuted() {
+        return instructionsExecuted;
+    }
+
+    public long getInstructionsSkipped() {
+        return instructionsSkipped;
+    }
+
+    public long getProgramCounterChanges() {
+        return programCounterChanges;
+    }
+
+    @Override
+    public String toString() {
+        return "MachineMetrics{" +
+                "instructionsExecuted=" + instructionsExecuted +
+                ", instructionsSkipped=" + instructionsSkipped +
+                ", programCounterChanges=" + programCounterChanges +
+                '}';
+    }
 }

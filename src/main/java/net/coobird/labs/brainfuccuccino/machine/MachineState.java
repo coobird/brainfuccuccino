@@ -26,35 +26,48 @@
 
 package net.coobird.labs.brainfuccuccino.machine;
 
-public class ExecutionStatistics {
-    private final long instructionsExecuted;
-    private final long instructionsSkipped;
-    private final long programCounterChanges;
+import java.util.Arrays;
 
-    public ExecutionStatistics(long instructionsExecuted, long instructionsSkipped, long programCounterChanges) {
-        this.instructionsExecuted = instructionsExecuted;
-        this.instructionsSkipped = instructionsSkipped;
-        this.programCounterChanges = programCounterChanges;
+/**
+ * The brainfuck machine state.
+ * <p/>
+ * If the memory cell is mutable, the memory cell contents is not
+ * guaranteed to be the same as when the state object was created.
+ * <p/>
+ * This class does not implement {@link #hashCode()} and
+ * {@link #equals(Object)}, so they cannot be used for comparisons.
+ *
+ * @param <T> Type of the memory cell.
+ */
+public class MachineState<T> {
+    private final int programCounter;
+    private final int dataPointer;
+    private final T[] memory;
+
+    public MachineState(int programCounter, int dataPointer, T[] memory) {
+        this.programCounter = programCounter;
+        this.dataPointer = dataPointer;
+        this.memory = Arrays.copyOf(memory, memory.length);
     }
 
-    public long getInstructionsExecuted() {
-        return instructionsExecuted;
+    public int getProgramCounter() {
+        return programCounter;
     }
 
-    public long getInstructionsSkipped() {
-        return instructionsSkipped;
+    public int getDataPointer() {
+        return dataPointer;
     }
 
-    public long getProgramCounterChanges() {
-        return programCounterChanges;
+    public T[] getMemory() {
+        return memory;
     }
 
     @Override
     public String toString() {
-        return "ExecutionStatistics{" +
-                "instructionsExecuted=" + instructionsExecuted +
-                ", instructionsSkipped=" + instructionsSkipped +
-                ", programCounterChanges=" + programCounterChanges +
+        return "MachineState{" +
+                "programCounter=" + programCounter +
+                ", dataPointer=" + dataPointer +
+                ", memory=" + Arrays.toString(memory) +
                 '}';
     }
 }

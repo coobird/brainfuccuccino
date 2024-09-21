@@ -125,7 +125,7 @@ public class SignedByteBoundedBrainfuckMachine
     }
 
     @Override
-    public ExecutionStatistics getStatistics() {
-        return new ExecutionStatistics(instructionsExecuted, nopInstructions, programCounterChanges);
+    public MachineMetrics getStatistics() {
+        return new MachineMetrics(instructionsExecuted, nopInstructions, programCounterChanges);
     }
 }

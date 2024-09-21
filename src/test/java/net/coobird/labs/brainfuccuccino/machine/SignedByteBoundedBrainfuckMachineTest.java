@@ -77,7 +77,7 @@ public class SignedByteBoundedBrainfuckMachineTest {
         SignedByteBoundedBrainfuckMachine machine = new SignedByteBoundedBrainfuckMachine(3);
         machine.evaluate("+>++>+++".getBytes(), null, null);
 
-        Introspectable.MachineState<Byte> state = machine.getState();
+        MachineState<Byte> state = machine.getState();
         assertEquals(8, state.getProgramCounter());
         assertEquals(2, state.getDataPointer());
         assertArrayEquals(new Byte[] {1, 2, 3}, state.getMemory());
@@ -111,8 +111,8 @@ public class SignedByteBoundedBrainfuckMachineTest {
             while (isRunning.get()) {
                 long now = System.currentTimeMillis();
                 if (now - lastCall > 50) {
-                    final Introspectable.MachineState<Byte> state = machine.getState();
-                    final ExecutionStatistics statistics = machine.getStatistics();
+                    final MachineState<Byte> state = machine.getState();
+                    final MachineMetrics statistics = machine.getStatistics();
                     final double elapsedTime = (double)(now - lastCall);
 
                     /*
