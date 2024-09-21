@@ -24,10 +24,38 @@
  * THE SOFTWARE.
  */
 
-package net.coobird.labs.brainfuccuccino;
+package net.coobird.labs.brainfuccuccino.vm.model;
 
-public enum Flavor {
-    REGULAR,
-    SIGNED_BYTE_BOUNDED,
-    INSTANT,
+public class Instruction {
+    private final Opcode opcode;
+    private int operand;
+
+    public Instruction(Opcode opcode) {
+        this(opcode, -1);
+    }
+
+    public Instruction(Opcode opcode, int operand) {
+        this.opcode = opcode;
+        this.operand = operand;
+    }
+
+    public Opcode getOpcode() {
+        return opcode;
+    }
+
+    public int getOperand() {
+        return operand;
+    }
+
+    public void setOperand(int operand) {
+        this.operand = operand;
+    }
+
+    @Override
+    public String toString() {
+        return "Instruction{" +
+                "opcode=" + opcode +
+                ", operand=" + operand +
+                '}';
+    }
 }

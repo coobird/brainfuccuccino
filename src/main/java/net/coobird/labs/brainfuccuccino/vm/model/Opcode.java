@@ -24,10 +24,15 @@
  * THE SOFTWARE.
  */
 
-package net.coobird.labs.brainfuccuccino;
+package net.coobird.labs.brainfuccuccino.vm.model;
 
-public enum Flavor {
-    REGULAR,
-    SIGNED_BYTE_BOUNDED,
-    INSTANT,
+public enum Opcode {
+    ADD, // Add
+    SUB, // Subtract
+    JMZ, // Jump on zero
+    JMN, // Jump on non-zero
+    MADD, // Memory pointer add
+    MSUB, // Memory pointer subtract
+    READ, // Load from input port
+    WRITE, // Save to output port
 }
