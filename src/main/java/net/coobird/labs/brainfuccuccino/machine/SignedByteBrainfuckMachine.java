@@ -78,7 +78,12 @@ public class SignedByteBrainfuckMachine
 
     private void checkBounds(int memoryPosition) {
         if (memoryPosition < 0 || memoryPosition >= this.memorySize) {
-            throw new MemoryRangeOutOfBoundsException(String.format("Memory cell out of bounds: <%s>", memoryPosition));
+            throw new MemoryRangeOutOfBoundsException(
+                    String.format(
+                            "Memory cell out of bounds: <%s>",
+                            memoryPosition
+                    )
+            );
         }
     }
 
@@ -97,7 +102,10 @@ public class SignedByteBrainfuckMachine
         byte value = memory[dataPointer];
         if (value == Byte.MAX_VALUE) {
             throw new MemoryCellOverflowException(
-                    String.format("Value <%s> out of bounds at <%s>", value, dataPointer)
+                    String.format(
+                            "Value <%s> out of bounds at <%s>",
+                            value, dataPointer
+                    )
             );
         }
         ++memory[dataPointer];
@@ -108,7 +116,10 @@ public class SignedByteBrainfuckMachine
         byte value = memory[dataPointer];
         if (value == Byte.MIN_VALUE) {
             throw new MemoryCellOverflowException(
-                    String.format("Value <%s> out of bounds at <%s>", value, dataPointer)
+                    String.format(
+                            "Value <%s> out of bounds at <%s>",
+                            value, dataPointer
+                    )
             );
         }
         --memory[dataPointer];
@@ -126,6 +137,8 @@ public class SignedByteBrainfuckMachine
 
     @Override
     public MachineMetrics getStatistics() {
-        return new MachineMetrics(instructionsExecuted, nopInstructions, programCounterChanges);
+        return new MachineMetrics(
+                instructionsExecuted, nopInstructions, programCounterChanges
+        );
     }
 }

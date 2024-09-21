@@ -84,7 +84,13 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
         while (programCounter < instructions.length) {
             Instruction instruction = instructions[programCounter];
             if (listener != null) {
-                listener.nextInstruction(programCounter, program[programCounter], instruction, dataPointer, memory[dataPointer]);
+                listener.nextInstruction(
+                        programCounter,
+                        program[programCounter],
+                        instruction,
+                        dataPointer,
+                        memory[dataPointer]
+                );
             }
             switch (instruction) {
                 case INCREMENT_POINTER:
