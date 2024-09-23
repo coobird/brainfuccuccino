@@ -26,8 +26,8 @@
 
 package net.coobird.labs.brainfuccuccino;
 
-import net.coobird.labs.brainfuccuccino.machine.ClassicBrainfuckMachine;
-import net.coobird.labs.brainfuccuccino.machine.SignedByteBrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.machine.impl.ClassicBrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.machine.impl.SignedByteBrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine;
 import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachineCompiler;

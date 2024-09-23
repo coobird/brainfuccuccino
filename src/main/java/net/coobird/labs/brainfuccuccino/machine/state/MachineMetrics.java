@@ -24,50 +24,37 @@
  * THE SOFTWARE.
  */
 
-package net.coobird.labs.brainfuccuccino.machine;
+package net.coobird.labs.brainfuccuccino.machine.state;
 
-import java.util.Arrays;
+public class MachineMetrics {
+    private final long instructionsExecuted;
+    private final long instructionsSkipped;
+    private final long programCounterChanges;
 
-/**
- * The brainfuck machine state.
- * <p/>
- * If the memory cell is mutable, the memory cell contents is not
- * guaranteed to be the same as when the state object was created.
- * <p/>
- * This class does not implement {@link #hashCode()} and
- * {@link #equals(Object)}, so they cannot be used for comparisons.
- *
- * @param <T> Type of the memory cell.
- */
-public class MachineState<T> {
-    private final int programCounter;
-    private final int dataPointer;
-    private final T[] memory;
-
-    public MachineState(int programCounter, int dataPointer, T[] memory) {
-        this.programCounter = programCounter;
-        this.dataPointer = dataPointer;
-        this.memory = Arrays.copyOf(memory, memory.length);
+    public MachineMetrics(long instructionsExecuted, long instructionsSkipped, long programCounterChanges) {
+        this.instructionsExecuted = instructionsExecuted;
+        this.instructionsSkipped = instructionsSkipped;
+        this.programCounterChanges = programCounterChanges;
     }
 
-    public int getProgramCounter() {
-        return programCounter;
+    public long getInstructionsExecuted() {
+        return instructionsExecuted;
     }
 
-    public int getDataPointer() {
-        return dataPointer;
+    public long getInstructionsSkipped() {
+        return instructionsSkipped;
     }
 
-    public T[] getMemory() {
-        return memory;
+    public long getProgramCounterChanges() {
+        return programCounterChanges;
     }
 
     @Override
     public String toString() {
-        return "MachineState{" +
-                "programCounter=" + programCounter +
-                ", dataPointer=" + dataPointer +
-                ", memory=" + Arrays.toString(memory) +
+        return "MachineMetrics{" +
+                "instructionsExecuted=" + instructionsExecuted +
+                ", instructionsSkipped=" + instructionsSkipped +
+                ", programCounterChanges=" + programCounterChanges +
                 '}';
     }
 }

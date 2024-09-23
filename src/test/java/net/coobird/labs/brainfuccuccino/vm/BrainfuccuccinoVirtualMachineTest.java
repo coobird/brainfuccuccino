@@ -24,8 +24,9 @@
  * THE SOFTWARE.
  */
 
-package net.coobird.labs.brainfuccuccino;
+package net.coobird.labs.brainfuccuccino.vm;
 
+import net.coobird.labs.brainfuccuccino.Utils;
 import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine;
 import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachineCompiler;
 import net.coobird.labs.brainfuccuccino.vm.model.Instruction;

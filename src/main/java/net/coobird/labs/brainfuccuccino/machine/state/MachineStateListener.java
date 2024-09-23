@@ -24,7 +24,9 @@
  * THE SOFTWARE.
  */
 
-package net.coobird.labs.brainfuccuccino.machine;
+package net.coobird.labs.brainfuccuccino.machine.state;
+
+import net.coobird.labs.brainfuccuccino.machine.Instruction;
 
 /**
  * A listener for receiving brainfuck machine states.

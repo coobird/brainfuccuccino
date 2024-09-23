@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-package net.coobird.labs.brainfuccuccino.machine;
+package net.coobird.labs.brainfuccuccino.machine.state;
 
 /**
  * Interface that indicates that a brainfuck machine's state can be inspected.
@@ -32,5 +32,5 @@ package net.coobird.labs.brainfuccuccino.machine;
  */
 public interface Introspectable<T> {
     MachineState<T> getState();
-    MachineMetrics getStatistics();
+    MachineMetrics getMetrics();
 }

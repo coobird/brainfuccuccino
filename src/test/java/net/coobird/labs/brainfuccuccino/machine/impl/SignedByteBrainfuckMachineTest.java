@@ -24,9 +24,13 @@
  * THE SOFTWARE.
  */
 
-package net.coobird.labs.brainfuccuccino.machine;
+package net.coobird.labs.brainfuccuccino.machine.impl;
 
 import net.coobird.labs.brainfuccuccino.Utils;
+import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.machine.MemoryRangeOutOfBoundsException;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -88,7 +92,7 @@ public class SignedByteBrainfuckMachineTest {
         SignedByteBrainfuckMachine machine = new SignedByteBrainfuckMachine(3);
         machine.evaluate("+>++>+++".getBytes(), null, null);
 
-        MachineMetrics metrics = machine.getStatistics();
+        MachineMetrics metrics = machine.getMetrics();
         assertEquals(8, metrics.getInstructionsExecuted());
         assertEquals(0, metrics.getInstructionsSkipped());
         assertEquals(8, metrics.getProgramCounterChanges());
@@ -123,7 +127,7 @@ public class SignedByteBrainfuckMachineTest {
                 long now = System.currentTimeMillis();
                 if (now - lastCall > 50) {
                     final MachineState<Byte> state = machine.getState();
-                    final MachineMetrics statistics = machine.getStatistics();
+                    final MachineMetrics statistics = machine.getMetrics();
                     final double elapsedTime = (double)(now - lastCall);
 
                     /*

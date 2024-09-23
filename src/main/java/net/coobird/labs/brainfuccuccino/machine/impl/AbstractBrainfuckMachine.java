@@ -24,7 +24,12 @@
  * THE SOFTWARE.
  */
 
-package net.coobird.labs.brainfuccuccino.machine;
+package net.coobird.labs.brainfuccuccino.machine.impl;
+
+import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.machine.Instruction;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineStateListener;
+import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException;
 
 import java.io.IOException;
 import java.io.InputStream;

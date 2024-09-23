@@ -24,7 +24,14 @@
  * THE SOFTWARE.
  */
 
-package net.coobird.labs.brainfuccuccino.machine;
+package net.coobird.labs.brainfuccuccino.machine.impl;
+
+import net.coobird.labs.brainfuccuccino.machine.MemoryCellOverflowException;
+import net.coobird.labs.brainfuccuccino.machine.MemoryRangeOutOfBoundsException;
+import net.coobird.labs.brainfuccuccino.machine.state.Introspectable;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineStateListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -136,7 +143,7 @@ public class SignedByteBrainfuckMachine
     }
 
     @Override
-    public MachineMetrics getStatistics() {
+    public MachineMetrics getMetrics() {
         return new MachineMetrics(
                 instructionsExecuted, nopInstructions, programCounterChanges
         );
