@@ -28,10 +28,10 @@
  * This package provides the
  * <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/api.html">Java Scripting API (JSR 223)</a>
  * support for Brainfuccuccino.
- * <p/>
+ * <p>
  * An example of running Hello World program using the Java Scripting API:
  *
- * <p><blockquote><pre>
+ * <blockquote><pre>
  * ScriptEngine bfScriptEngine = new ScriptEngineManager().getEngineByName("brainfuccucino");
  * ScriptContext context = bfScriptEngine.getContext();
  *
@@ -41,14 +41,14 @@
  *
  * // Hello World program from https://esolangs.org/wiki/Brainfuck (CC0 public domain)
  * bfScriptEngine.eval(
- *         "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>" +
- *         "---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.",
+ *         "++++++++[&gt;++++[&gt;++&gt;+++&gt;+++&gt;+&lt;&lt;&lt;&lt;-]&gt;+&gt;+&gt;-&gt;&gt;+[&lt;]&lt;-]&gt;&gt;.&gt;" +
+ *         "---.+++++++..+++.&gt;&gt;.&lt;-.&lt;.+++.------.--------.&gt;&gt;+.&gt;++.",
  *         context
  * );
  *
  * // Prints "Hello World!"
  * System.out.println(writer.toString());
- * </pre></blockquote></p>
+ * </pre></blockquote>
  */
 package net.coobird.labs.brainfuccuccino.engine;
 

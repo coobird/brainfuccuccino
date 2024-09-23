@@ -30,10 +30,10 @@ import java.util.Arrays;
 
 /**
  * The brainfuck machine state.
- * <p/>
+ * <p>
  * If the memory cell is mutable, the memory cell contents is not
  * guaranteed to be the same as when the state object was created.
- * <p/>
+ * <p>
  * This class does not implement {@link #hashCode()} and
  * {@link #equals(Object)}, so they cannot be used for comparisons.
  *

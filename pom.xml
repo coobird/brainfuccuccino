@@ -7,6 +7,11 @@
     <groupId>net.coobird.labs.brainfuccuccino</groupId>
     <artifactId>brainfuccuccino</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Brainfuccuccino</name>
+    <description>Brainfuccuccino - brainfuck scripting engine for Java</description>
+    <url>https://github.com/coobird/brainfuccuccino</url>
 
     <licenses>
         <license>
@@ -24,6 +29,12 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:git@github.com:coobird/brainfuccuccino.git</connection>
+        <developerConnection>scm:git:git@github.com:coobird/brainfuccuccino.git</developerConnection>
+        <url>git@github.com:coobird/brainfuccuccino.git</url>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -33,7 +44,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -43,6 +54,88 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Specification-Title>Brainfuccuccino sources</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>coobird.net</Specification-Vendor>
+                            <Implementation-Title>Brainfuccuccino sources</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>coobird.net</Implementation-Vendor>
+                        </manifestEntries>
+                    </archive>
+                    <excludeResources>false</excludeResources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.10.0</version>
+                <configuration>
+                    <doctitle>Brainfuccuccino Documentation (Version ${project.version})</doctitle>
+                    <windowtitle>Brainfuccuccino Documentation (Version ${project.version})</windowtitle>
+                    <locale>en_US</locale>
+                    <show>public</show>
+                    <use>false</use>
+                    <outputDirectory>${project.build.outputDirectory}/javadoc</outputDirectory>
+                    <archive>
+                        <manifestEntries>
+                            <Specification-Title>Brainfuccuccino Documentation</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>coobird.net</Specification-Vendor>
+                            <Implementation-Title>Brainfuccuccino API Documentation</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>coobird.net</Implementation-Vendor>
+                        </manifestEntries>
+                    </archive>
+                    <source>8</source>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>site-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>site</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Specification-Title>Brainfuccuccino</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>coobird.net</Specification-Vendor>
+                            <Implementation-Title>Brainfuccuccino</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>coobird.net</Implementation-Vendor>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>

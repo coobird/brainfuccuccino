@@ -43,7 +43,7 @@ import java.util.List;
  * Brainfuccuccino is a Java scripting engine which allows
  * <a href="https://en.wikipedia.org/wiki/Brainfuck">brainfuck</a> programs
  * to be embedded and run in Java applications.
- * <p/>
+ * <p>
  * The {@code Brainfuccuccino} class provides two styles to running brainfuck
  * programs, using coffee-themed method names:
  *
@@ -57,28 +57,28 @@ import java.util.List;
  * With the {@link #brew(String)} method, a {@link String} representation of
  * a brainfuck program will be run, with the input being {@link System#in},
  * while output being {@link System#out}.
- * <p/>
+ * <p>
  * A {@code cat} program can be run by:
  *
- * <p><blockquote><pre>
+ * <blockquote><pre>
  * Brainfuccuccino.brew(",[.,]");
- * </pre></blockquote></p>
+ * </pre></blockquote>
  *
  * <h2>Customized execution via a fluent interface.</h2>
  *
  * Brainfuccuccino also has a fluent interface for customizing your brew.
  * First, call {@link Brainfuccuccino#customize()}.
- * <p/>
+ * <p>
  * Next, use the {@link #flavor(Flavor)} method to pick the execution
  * implementation. (See the {@link Flavor} enum for more information.)
  * This is completely optional.
- * <p/>
+ * <p>
  * Attach your inputs and outputs using the {@link #attach(InputStream)}
  * and {@link #attach(OutputStream)} methods. Both are optional, which default
  * to using {@link System#in} and {@link System#out}, respectively.
- * <p/>
+ * <p>
  * Finally, to run the program, call {@link #evaluate(String)}:
- * <p><blockquote><pre>
+ * <blockquote><pre>
  * ByteArrayOutputStream os = new ByteArrayOutputStream();
  *
  * // Prints "Hello World!" to the ByteArrayOutputStream.
@@ -87,7 +87,7 @@ import java.util.List;
  *         .attach(os)
  *         .evaluate(",[.,]");
  *
- * </pre></blockquote></p>
+ * </pre></blockquote>
  */
 public final class Brainfuccuccino {
     private final InputStream is;
