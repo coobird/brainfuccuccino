@@ -29,6 +29,9 @@ package net.coobird.labs.brainfuccuccino.machine.impl;
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.MemoryRangeOutOfBoundsException;
 import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException;
+import net.coobird.labs.brainfuccuccino.machine.state.Introspectable;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +43,7 @@ import java.io.OutputStream;
  * Memory cells are bounded at 30000 cells.
  * End-of-stream will write a {@code 0} to the current memory cell on read.
  */
-public class ClassicBrainfuckMachine implements BrainfuckMachine {
+public class ClassicBrainfuckMachine implements BrainfuckMachine, Introspectable<Byte> {
     private static final int SIZE = 30000;
     private int programCounter = 0;
     private int dataPointer = 0;
@@ -175,5 +178,21 @@ public class ClassicBrainfuckMachine implements BrainfuckMachine {
 
     private void inputValue(byte value) {
         memory[dataPointer] = value;
+    }
+
+    @Override
+    public MachineState<Byte> getState() {
+        Byte[] memoryCopy = new Byte[memory.length];
+        for (int i = 0; i < memory.length; i++) {
+            memoryCopy[i] = memory[i];
+        }
+        return new MachineState<>(programCounter, dataPointer, memoryCopy);
+    }
+
+    @Override
+    public MachineMetrics getMetrics() {
+        return new MachineMetrics(
+                instructionsExecuted, nopInstructions, programCounterChanges
+        );
     }
 }
