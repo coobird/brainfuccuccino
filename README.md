@@ -84,9 +84,9 @@ Second, add the following the `<dependencies>` section of the POM:
 
 ```xml
 <dependency>
-	<groupId>net.coobird.labs.brainfuccuccino</groupId>
-	<artifactId>brainfuccuccino</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+  <groupId>net.coobird.labs.brainfuccuccino</groupId>
+  <artifactId>brainfuccuccino</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
 
