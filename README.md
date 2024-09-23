@@ -52,3 +52,11 @@ This allows quick experimentation with brainfuck programs that involve I/O.
 
 [1]: https://en.wikipedia.org/wiki/Brainfuck
 [2]: https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/api.html
+
+# Disclaimer
+
+_Brainfuccuccino is still early in its development, and the APIs are subject to change at any time._
+
+# License
+
+Brainfuccuccino is released under the MIT License.
