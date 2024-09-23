@@ -53,9 +53,47 @@ This allows quick experimentation with brainfuck programs that involve I/O.
 [1]: https://en.wikipedia.org/wiki/Brainfuck
 [2]: https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/api.html
 
+# Maven
+
+Brainfuccuccino is not yet available on Maven Central.
+Currently, it is only available as SNAPSHOT artifacts on OSSRH repository provided by Sonatype.
+
+_NOTE: The SNAPSHOT artifacts will likely not be provided once the first release artifact is available._
+
+It takes two modifications in your application's `pom.xml` to use the SNAPSHOT artifacts:
+
+First, add the following to get SNAPSHOT artifacts from the OSSRH repository:
+
+```xml
+<repositories>
+  <repository>
+    <id>ossrh-snapshot</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>  
+    <snapshots>
+      <enabled>true</enabled>
+      <updatePolicy>daily</updatePolicy>
+    </snapshots>
+  </repository>
+</repositories>
+```
+
+Second, add the following the `<dependencies>` section of the POM:
+
+```xml
+<dependency>
+	<groupId>net.coobird.labs.brainfuccuccino</groupId>
+	<artifactId>brainfuccuccino</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
 # Disclaimer
 
-_Brainfuccuccino is still early in its development, and the APIs are subject to change at any time._
+_Brainfuccuccino is very early in its development.
+The APIs are subject to change at any time._
 
 # License
 
