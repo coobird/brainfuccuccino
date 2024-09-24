@@ -27,9 +27,10 @@
 package net.coobird.labs.brainfuccuccino.vm;
 
 import net.coobird.labs.brainfuccuccino.Utils;
-import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine;
-import net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachineCompiler;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
 import net.coobird.labs.brainfuccuccino.vm.model.Instruction;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 
@@ -37,9 +38,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BrainfuccuccinoVirtualMachineTest {
@@ -143,5 +146,40 @@ public class BrainfuccuccinoVirtualMachineTest {
         ).execute();
 
         assertEquals("こんにちは世界！", baos.toString());
+    }
+
+    @Test
+    public void introspectionTest() throws IOException {
+        BrainfuckVirtualMachineCompiler compiler = new BrainfuckVirtualMachineCompiler();
+        List<Instruction> instructions = compiler.compile("+>++>+++", 1);
+
+        BrainfuckVirtualMachine machine = new BrainfuckVirtualMachine(
+                instructions, null, null
+        );
+        machine.execute();
+
+        MachineState<Byte> state = machine.getState();
+        assertEquals(5, state.getProgramCounter());
+        assertEquals(2, state.getDataPointer());
+        assertArrayEquals(
+                new Byte[] {1, 2, 3},
+                Arrays.stream(state.getMemory()).limit(3).toArray()
+        );
+    }
+
+    @Test
+    public void inspectionTest() throws IOException {
+        BrainfuckVirtualMachineCompiler compiler = new BrainfuckVirtualMachineCompiler();
+        List<Instruction> instructions = compiler.compile("+>++>+++", 5);
+
+        BrainfuckVirtualMachine machine = new BrainfuckVirtualMachine(
+                instructions, null, null
+        );
+        machine.execute();
+
+        MachineMetrics metrics = machine.getMetrics();
+        assertEquals(5, metrics.getInstructionsExecuted());
+        assertEquals(0, metrics.getInstructionsSkipped());
+        assertEquals(5, metrics.getProgramCounterChanges());
     }
 }

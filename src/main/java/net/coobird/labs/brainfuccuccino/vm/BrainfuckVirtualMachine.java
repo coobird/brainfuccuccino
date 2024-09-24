@@ -26,6 +26,9 @@
 
 package net.coobird.labs.brainfuccuccino.vm;
 
+import net.coobird.labs.brainfuccuccino.machine.state.Introspectable;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
+import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
 import net.coobird.labs.brainfuccuccino.vm.model.Instruction;
 
 import java.io.IOException;
@@ -33,7 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-public class BrainfuckVirtualMachine {
+public class BrainfuckVirtualMachine implements Introspectable<Byte> {
     private static final int SIZE = 30000;
     private int programCounter = 0;
     private int dataPointer = 0;
@@ -131,5 +134,21 @@ public class BrainfuckVirtualMachine {
                     throw new IllegalStateException("Unknown instruction: " + instruction);
             }
         }
+    }
+
+    @Override
+    public MachineState<Byte> getState() {
+        Byte[] memoryCopy = new Byte[memory.length];
+        for (int i = 0; i < memory.length; i++) {
+            memoryCopy[i] = memory[i];
+        }
+        return new MachineState<>(programCounter, dataPointer, memoryCopy);
+    }
+
+    @Override
+    public MachineMetrics getMetrics() {
+        return new MachineMetrics(
+                instructionsExecuted, 0, programCounterChanges
+        );
     }
 }
