@@ -40,6 +40,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -144,7 +145,11 @@ public class MachineStateTest {
             }
         }).start();
 
-        machine.evaluate(Utils.getScriptFromResources("dots.bf").getBytes(), null, System.out);
+        machine.evaluate(
+                Utils.getScriptFromResources("dots.bf").getBytes(),
+                null,
+                new ByteArrayOutputStream()
+        );
 
         // Just to enable seeing the JFrame
         Thread.sleep(5000);
