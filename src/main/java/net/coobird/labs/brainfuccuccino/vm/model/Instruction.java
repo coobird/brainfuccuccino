@@ -52,6 +52,24 @@ public class Instruction {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Instruction that = (Instruction) o;
+
+        if (operand != that.operand) return false;
+        return opcode == that.opcode;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = opcode != null ? opcode.hashCode() : 0;
+        result = 31 * result + operand;
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Instruction{" +
                 "opcode=" + opcode +
