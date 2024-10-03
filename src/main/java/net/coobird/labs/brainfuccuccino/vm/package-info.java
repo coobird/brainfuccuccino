@@ -26,6 +26,8 @@
 
 /**
  * This package provides a virtual machine for executing brainfuck.
+ * <p>
+ * {@link net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine} is the virtual machine provided by Brainfuccuccino.
  */
 package net.coobird.labs.brainfuccuccino.vm;
 

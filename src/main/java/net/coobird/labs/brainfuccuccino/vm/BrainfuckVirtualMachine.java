@@ -36,6 +36,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+/**
+ * A brainfuck virtual machine for Brainfuccuccino.
+ * <p>
+ * This virtual machine consists of eight opcodes defined in {@link net.coobird.labs.brainfuccuccino.vm.model.Opcode}.
+ * Unlike a regular brainfuck machine, it accepts operands to improve code density.
+ * This allows the virtual machine to execute faster by reducing necessary state changes.
+ * <p>
+ * Additionally, the virtual machine does not provide a direct analogue to brainfuck's {@code [} and {@code ]} instructions.
+ * Rather, it provides classical jump instructions ({@link net.coobird.labs.brainfuccuccino.vm.model.Opcode#JMZ} and {@link net.coobird.labs.brainfuccuccino.vm.model.Opcode#JMN}) to move the program counter to specific locations in the program memory.
+ * Therefore, a compiler must determine jump locations ahead of time.
+ * <p>
+ * The machine's memory cells are {@code byte}s and consist of an array of 30,000 elements.
+ * <p>
+ * For input and output, a byte of data will be exchanged via {@link InputStream} and {@link OutputStream}, respectively.
+ */
 public class BrainfuckVirtualMachine implements Introspectable<Byte> {
     private static final int SIZE = 30000;
     private int programCounter = 0;

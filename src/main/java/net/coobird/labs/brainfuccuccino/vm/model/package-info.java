@@ -25,7 +25,7 @@
  */
 
 /**
- * This package provides model objects for the Brainfuccuccino brainfuck virtual machine.
+ * This package provides model objects for the {@link net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine}.
  */
 package net.coobird.labs.brainfuccuccino.vm.model;
 

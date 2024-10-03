@@ -26,13 +26,42 @@
 
 package net.coobird.labs.brainfuccuccino.vm.model;
 
+/**
+ * Opcodes for the {@link net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine}.
+ */
 public enum Opcode {
-    ADD, // Add
-    SUB, // Subtract
-    JMZ, // Jump on zero
-    JMN, // Jump on non-zero
-    MADD, // Memory pointer add
-    MSUB, // Memory pointer subtract
-    READ, // Load from input port
-    WRITE, // Save to output port
+    /**
+     * Adds the operand value from the current memory cell.
+     */
+    ADD,
+    /**
+     * Subtracts the operand value from the current memory cell.
+     */
+    SUB,
+    /**
+     * Jump to operand location when the current memory cell value is zero.
+     */
+    JMZ,
+    /**
+     * Jump to operand location when the current memory cell value is non-zero.
+     */
+    JMN,
+    /**
+     * Move memory cell pointer forward by operand locations.
+     */
+    MADD,
+    /**
+     * Move memory cell pointer backward by operand locations.
+     */
+    MSUB,
+    /**
+     * Read a value from the input port and stores in the current memory cell.
+     * An {@link Instruction} with this opcode will ignore the operand.
+     */
+    READ,
+    /**
+     * Write a value from the current memory cell to the output port.
+     * An {@link Instruction} with this opcode will ignore the operand.
+     */
+    WRITE,
 }

@@ -26,6 +26,14 @@
 
 package net.coobird.labs.brainfuccuccino.vm.model;
 
+/**
+ * Instruction of the {@link net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine}.
+ * <p>
+ * An instruction consists of an {@link Opcode} and operand.
+ * <p>
+ * The operand is mutable to allow changes by the compiler.
+ * It is not intended to be mutable at runtime.
+ */
 public class Instruction {
     private final Opcode opcode;
     private int operand;
