@@ -26,7 +26,25 @@
 
 package net.coobird.labs.brainfuccuccino;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class Constants {
     public static final String ENGINE_NAME = "brainfuccucino";
-    public static final String ENGINE_VERSION = "0.0.1";
+    public static final String ENGINE_VERSION;
+
+    static {
+        InputStream is = Constants.class.getResourceAsStream("/version");
+        String value = "UNKNOWN";
+        if (is != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+                value = reader.readLine();
+            } catch (IOException e) {
+                // Keep "UNKNOWN" as the version.
+            }
+        }
+        ENGINE_VERSION = value;
+    }
 }

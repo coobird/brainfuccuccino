@@ -43,6 +43,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ScriptEngineTest {
@@ -80,6 +81,12 @@ public class ScriptEngineTest {
         ScriptEngine bfScriptEngine = new ScriptEngineManager().getEngineByMimeType("application/X-brainfuck");
         assertNotNull(bfScriptEngine);
         assertEquals(BrainfuckScriptEngine.class, bfScriptEngine.getClass());
+    }
+
+    @Test
+    public void engineVersionPopulated() {
+        ScriptEngine bfScriptEngine = new ScriptEngineManager().getEngineByName("brainfuccucino");
+        assertNotEquals("UNKNOWN", bfScriptEngine.getFactory().getEngineVersion());
     }
 
     @Test
