@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BrainfuccuccinoVirtualMachineTest {
+public class BrainfuckVirtualMachineTest {
     private final BrainfuckVirtualMachineCompiler compiler = new BrainfuckVirtualMachineCompiler();
 
     static Stream<Arguments> optimizationLevels() {
