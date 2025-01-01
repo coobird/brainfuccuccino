@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,19 @@
 package net.coobird.labs.brainfuccuccino;
 
 public enum Flavor {
+    /**
+     * Uses a classic brainfuck interpreter implementation.
+     * @see net.coobird.labs.brainfuccuccino.machine.impl.ClassicBrainfuckMachine
+     */
     REGULAR,
-    SIGNED_BYTE,
+    /**
+     * Uses an interpreter that supports both negative and positive numbers with value bounds checks.
+     * @see net.coobird.labs.brainfuccuccino.machine.impl.SignedByteBrainfuckMachine
+     */
+    CAFE_AU_LAIT,
+    /**
+     * Uses an implementation that executes compute-heavy programs much faster.
+     * @see net.coobird.labs.brainfuccuccino.vm.BrainfuckVirtualMachine
+     */
     INSTANT,
 }

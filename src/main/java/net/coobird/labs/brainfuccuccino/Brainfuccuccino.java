@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -110,7 +110,7 @@ public final class Brainfuccuccino {
             case REGULAR:
                 machine = new ClassicBrainfuckMachine();
                 break;
-            case SIGNED_BYTE:
+            case CAFE_AU_LAIT:
                 machine = new SignedByteBrainfuckMachine();
                 break;
             case INSTANT:
