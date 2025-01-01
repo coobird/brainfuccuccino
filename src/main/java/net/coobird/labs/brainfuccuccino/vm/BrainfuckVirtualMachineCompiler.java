@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@
 
 package net.coobird.labs.brainfuccuccino.vm;
 
+import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException;
 import net.coobird.labs.brainfuccuccino.vm.model.Instruction;
 import net.coobird.labs.brainfuccuccino.vm.model.Opcode;
 
@@ -38,17 +39,30 @@ import java.util.List;
 public class BrainfuckVirtualMachineCompiler {
     private static final int UNKNOWN_ADDRESS = -1;
 
+    private static List<Instruction> verifyInstructions(List<Instruction> instructions) {
+        for (Instruction instruction : instructions) {
+            if (instruction.getOpcode() == Opcode.JMZ && instruction.getOperand() < 0) {
+                throw new ProgramRangeOutOfBoundsException("Couldn't find closing ']'");
+            }
+        }
+        return instructions;
+    }
+
+    public List<Instruction> compile(String program) {
+        return compile(program, 0);
+    }
+
     public List<Instruction> compile(String program, int optimizationLevel) {
         if (optimizationLevel == 0) {
-            return compile(program);
+            return verifyInstructions(compileWithoutOptimization(program));
         } else if (optimizationLevel > 0) {
-            return compileWithOptimization(program);
+            return verifyInstructions(compileWithOptimization(program));
         } else {
             throw new IllegalArgumentException("Optimization level must be a positive value.");
         }
     }
 
-    public List<Instruction> compile(String program) {
+    private static List<Instruction> compileWithoutOptimization(String program) {
         int address = 0;
         // A stack used to find matching loop construct. Uses LinkedList as an implementation of Stack.
         Deque<Integer> returnAddressStack = new LinkedList<>();
@@ -87,6 +101,9 @@ public class BrainfuckVirtualMachineCompiler {
                     address++;
                     break;
                 case ']':
+                    if (returnAddressStack.isEmpty()) {
+                        throw new ProgramRangeOutOfBoundsException("Couldn't find opening '['");
+                    }
                     int matchingOpening = returnAddressStack.pop();
                     instructions.add(new Instruction(Opcode.JMN, matchingOpening));
                     Instruction matchingInstruction = instructions.get(matchingOpening);
@@ -146,7 +163,7 @@ public class BrainfuckVirtualMachineCompiler {
         }
     }
 
-    private List<Instruction> compileWithOptimization(String program) {
+    private static List<Instruction> compileWithOptimization(String program) {
         int address = 0;
         // A stack used to find matching loop construct. Uses LinkedList as an implementation of Stack.
         Deque<Integer> returnAddressStack = new LinkedList<>();
@@ -195,6 +212,9 @@ public class BrainfuckVirtualMachineCompiler {
                     break;
                 case ']':
                     for (int i = 0; i < length; i++) {
+                        if (returnAddressStack.isEmpty()) {
+                            throw new ProgramRangeOutOfBoundsException("Couldn't find opening '['");
+                        }
                         int matchingOpening = returnAddressStack.pop();
                         instructions.add(new Instruction(Opcode.JMN, matchingOpening));
                         Instruction matchingInstruction = instructions.get(matchingOpening);

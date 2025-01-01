@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@
 
 package net.coobird.labs.brainfuccuccino;
 
+import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Functionality tests for different flavors of Brainfuck machines include in Brainfuccuccino.
@@ -140,5 +142,26 @@ public class BrainfuccuccinoFlavorTest {
                 .evaluate(Utils.getScriptFromResources("cat.bf"));
 
         assertEquals("こんにちは世界！", baos.toString());
+    }
+
+    @ParameterizedTest
+    @EnumSource(Flavor.class)
+    public void matchingBeginLoopIsMissing(Flavor flavor) {
+        assertThrows(
+                ProgramRangeOutOfBoundsException.class,
+                () -> Brainfuccuccino.customize()
+                        .flavor(flavor)
+                        .evaluate("+]")
+        );
+    }
+    @ParameterizedTest
+    @EnumSource(Flavor.class)
+    public void matchingEndLoopIsMissing(Flavor flavor) throws IOException {
+        assertThrows(
+                ProgramRangeOutOfBoundsException.class,
+                () -> Brainfuccuccino.customize()
+                        .flavor(flavor)
+                        .evaluate("[+")
+        );
     }
 }
