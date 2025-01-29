@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,19 +28,26 @@ package net.coobird.labs.brainfuccuccino.machine.impl;
 
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.Instruction;
+import net.coobird.labs.brainfuccuccino.machine.debug.Breakpoint;
+import net.coobird.labs.brainfuccuccino.machine.debug.Debuggable;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineStateListener;
 import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * A brainfuck machine with an abstract memory type.
  * The program is bounded (finite).
  * @param <T>   Type used by the memory cells in the brainfuck machine.
  */
-public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
+public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine, Debuggable {
     protected int programCounter = 0;
     protected int dataPointer = 0;
     protected final T[] memory;
@@ -49,6 +56,16 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
     protected long instructionsExecuted = 0;
     protected long nopInstructions = 0;
     protected long programCounterChanges = 0;
+
+    protected Set<Breakpoint> breakpoints = new HashSet<>();
+    protected Map<Integer, Breakpoint> breakpointAddresses;
+
+    // These fields are populated for current evaluation.
+    // By keeping these states, execution can be interrupted and resumed.
+    private Instruction[] instructions;
+    private byte[] program;
+    private InputStream is;
+    private OutputStream os;
 
     protected AbstractBrainfuckMachine(T[] memory) {
         this(memory, null);
@@ -80,13 +97,41 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
         return instructions;
     }
 
+    protected boolean isInterrupted = false;
+    protected boolean isComplete = false;
+
     @Override
-    public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
-        // Pre-translate program into instructions.
-        // This will reduce interpretation time.
-        Instruction[] instructions = bytesToInstructions(program);
+    public boolean isInterrupted() {
+        return isInterrupted;
+    }
+
+    @Override
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    @Override
+    public void resume() throws IOException {
+        if (isComplete) {
+            throw new IllegalStateException("Execution already complete.");
+        }
 
         while (programCounter < instructions.length) {
+            breakpointCheck:
+            // Prevent adversely affecting execution speed by keeping initial check as light as possible.
+            if (!breakpoints.isEmpty() && breakpointAddresses.containsKey(programCounter)) {
+                Breakpoint breakpoint = breakpointAddresses.get(programCounter);
+                if (!breakpoint.isEnabled()) {
+                    break breakpointCheck;
+                }
+
+                if (!isInterrupted) {
+                    isInterrupted = true;
+                    return;
+                }
+            }
+            isInterrupted = false;
+
             Instruction instruction = instructions[programCounter];
             if (listener != null) {
                 listener.nextInstruction(
@@ -176,6 +221,18 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
             programCounterChanges++;
             programCounter++;
         }
+        isComplete = true;
+    }
+
+    @Override
+    public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
+        // Pre-translate program into instructions.
+        // This will reduce interpretation time.
+        instructions = bytesToInstructions(program);
+        this.program = program;
+        this.is = is;
+        this.os = os;
+        resume();
     }
 
     /**
@@ -217,5 +274,28 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
      */
     protected void setValueToMemory(T value) {
         memory[dataPointer] = value;
+    }
+
+    private void updateBreakpointAddresses() {
+        breakpointAddresses = breakpoints.stream()
+                .collect(Collectors.toMap(Breakpoint::getAddress, Function.identity()));
+    }
+
+    @Override
+    public void addBreakpoint(Breakpoint breakpoint) {
+        if (breakpoints.contains(breakpoint)) {
+            throw new IllegalArgumentException("Breakpoint already exists.");
+        }
+        breakpoints.add(breakpoint);
+        updateBreakpointAddresses();
+    }
+
+    @Override
+    public void removeBreakpoint(Breakpoint breakpoint) {
+        if (!breakpoints.contains(breakpoint)) {
+            throw new IllegalArgumentException(String.format("Cannot find breakpoint: %s", breakpoint));
+        }
+        breakpoints.remove(breakpoint);
+        updateBreakpointAddresses();
     }
 }

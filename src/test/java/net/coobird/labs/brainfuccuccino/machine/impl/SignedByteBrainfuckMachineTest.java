@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,10 @@
 
 package net.coobird.labs.brainfuccuccino.machine.impl;
 
+import net.coobird.labs.brainfuccuccino.Utils;
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.MemoryRangeOutOfBoundsException;
+import net.coobird.labs.brainfuccuccino.machine.debug.Breakpoint;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
 import org.junit.jupiter.api.Test;
@@ -37,9 +39,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SignedByteBrainfuckMachineTest {
 
@@ -86,5 +86,66 @@ public class SignedByteBrainfuckMachineTest {
         assertEquals(8, metrics.getInstructionsExecuted());
         assertEquals(0, metrics.getInstructionsSkipped());
         assertEquals(8, metrics.getProgramCounterChanges());
+    }
+    
+    private static byte[] slice(Byte[] memory, int size) {
+        byte[] tmp = new byte[size];
+        for (int i = 0; i < size; i++) {
+            tmp[i] = memory[i];
+        }
+        return tmp;
+    }
+
+    @Test
+    public void breakpointTest() throws IOException {
+        SignedByteBrainfuckMachine machine = new SignedByteBrainfuckMachine();
+        machine.addBreakpoint(new Breakpoint(2, true));
+        machine.addBreakpoint(new Breakpoint(6, true));
+
+        machine.evaluate("+>++>+++".getBytes(), null, null);
+        assertEquals(2, machine.getState().getProgramCounter());
+        assertArrayEquals(new byte[] {1, 0, 0}, slice(machine.getState().getMemory(), 3));
+
+        machine.resume();
+        assertEquals(6, machine.getState().getProgramCounter());
+        assertArrayEquals(new byte[] {1, 2, 1}, slice(machine.getState().getMemory(), 3));
+        assertTrue(machine.isInterrupted());
+        assertFalse(machine.isComplete());
+
+        machine.resume();
+        assertEquals(8, machine.getState().getProgramCounter());
+        assertArrayEquals(new byte[] {1, 2, 3}, slice(machine.getState().getMemory(), 3));
+        assertFalse(machine.isInterrupted());
+        assertTrue(machine.isComplete());
+
+        MachineMetrics metrics = machine.getMetrics();
+        assertEquals(8, metrics.getInstructionsExecuted());
+        assertEquals(0, metrics.getInstructionsSkipped());
+        assertEquals(8, metrics.getProgramCounterChanges());
+    }
+
+    @Test
+    public void breakpointOnAndOffTest() throws IOException {
+        SignedByteBrainfuckMachine machine = new SignedByteBrainfuckMachine();
+        Breakpoint breakpoint = new Breakpoint(48, true);
+        machine.addBreakpoint(breakpoint);
+
+        machine.evaluate(Utils.getScriptFromResources("loop.bf").getBytes(), null, new ByteArrayOutputStream());
+        assertEquals(48, machine.getState().getProgramCounter());
+        assertArrayEquals(new byte[] {42, 2}, slice(machine.getState().getMemory(), 2));
+        assertTrue(machine.isInterrupted());
+        assertFalse(machine.isComplete());
+
+        breakpoint.disable();
+        machine.resume();
+        assertEquals(51, machine.getState().getProgramCounter());
+        assertArrayEquals(new byte[] {42, 0}, slice(machine.getState().getMemory(), 2));
+        assertFalse(machine.isInterrupted());
+        assertTrue(machine.isComplete());
+
+        MachineMetrics metrics = machine.getMetrics();
+        assertEquals(55, metrics.getInstructionsExecuted());
+        assertEquals(0, metrics.getInstructionsSkipped());
+        assertEquals(59, metrics.getProgramCounterChanges());
     }
 }
