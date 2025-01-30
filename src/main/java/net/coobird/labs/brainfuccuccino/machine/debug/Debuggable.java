@@ -27,13 +27,17 @@
 package net.coobird.labs.brainfuccuccino.machine.debug;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public interface Debuggable {
+    void load(byte[] program, InputStream is, OutputStream os);
+
     /**
-     * Resumes execution of the brainfuck machine.
+     * Starts or resumes execution of the brainfuck machine.
      * @throws IOException  When an exception is thrown during execution.
      */
-    void resume() throws IOException;
+    void execute() throws IOException;
 
     /**
      * Indicates whether execution is currently interrupted by a breakpoint.

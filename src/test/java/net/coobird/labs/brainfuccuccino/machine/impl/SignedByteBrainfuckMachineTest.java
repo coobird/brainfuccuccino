@@ -102,17 +102,18 @@ public class SignedByteBrainfuckMachineTest {
         machine.addBreakpoint(new Breakpoint(2, true));
         machine.addBreakpoint(new Breakpoint(6, true));
 
-        machine.evaluate("+>++>+++".getBytes(), null, null);
+        machine.load("+>++>+++".getBytes(), null, null);
+        machine.execute();
         assertEquals(2, machine.getState().getProgramCounter());
         assertArrayEquals(new byte[] {1, 0, 0}, slice(machine.getState().getMemory(), 3));
 
-        machine.resume();
+        machine.execute();
         assertEquals(6, machine.getState().getProgramCounter());
         assertArrayEquals(new byte[] {1, 2, 1}, slice(machine.getState().getMemory(), 3));
         assertTrue(machine.isInterrupted());
         assertFalse(machine.isComplete());
 
-        machine.resume();
+        machine.execute();
         assertEquals(8, machine.getState().getProgramCounter());
         assertArrayEquals(new byte[] {1, 2, 3}, slice(machine.getState().getMemory(), 3));
         assertFalse(machine.isInterrupted());
@@ -130,14 +131,15 @@ public class SignedByteBrainfuckMachineTest {
         Breakpoint breakpoint = new Breakpoint(48, true);
         machine.addBreakpoint(breakpoint);
 
-        machine.evaluate(Utils.getScriptFromResources("loop.bf").getBytes(), null, new ByteArrayOutputStream());
+        machine.load(Utils.getScriptFromResources("loop.bf").getBytes(), null, new ByteArrayOutputStream());
+        machine.execute();
         assertEquals(48, machine.getState().getProgramCounter());
         assertArrayEquals(new byte[] {42, 2}, slice(machine.getState().getMemory(), 2));
         assertTrue(machine.isInterrupted());
         assertFalse(machine.isComplete());
 
         breakpoint.disable();
-        machine.resume();
+        machine.execute();
         assertEquals(51, machine.getState().getProgramCounter());
         assertArrayEquals(new byte[] {42, 0}, slice(machine.getState().getMemory(), 2));
         assertFalse(machine.isInterrupted());

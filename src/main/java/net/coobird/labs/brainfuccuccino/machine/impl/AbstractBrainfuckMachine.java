@@ -111,7 +111,7 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine, D
     }
 
     @Override
-    public void resume() throws IOException {
+    public void execute() throws IOException {
         if (isComplete) {
             throw new IllegalStateException("Execution already complete.");
         }
@@ -225,14 +225,19 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine, D
     }
 
     @Override
-    public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
+    public void load(byte[] program, InputStream is, OutputStream os) {
         // Pre-translate program into instructions.
         // This will reduce interpretation time.
         instructions = bytesToInstructions(program);
         this.program = program;
         this.is = is;
         this.os = os;
-        resume();
+    }
+
+    @Override
+    public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
+        load(program, is, os);
+        execute();
     }
 
     /**
