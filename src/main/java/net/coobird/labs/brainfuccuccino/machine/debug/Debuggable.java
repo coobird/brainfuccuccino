@@ -30,7 +30,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Interface implemented by brainfuck machines that support debugging.
+ * <p>
+ * The lifecycle for debuggable brainfuck machines is:
+ * <ol>
+ *     <li>Load the program with the {@link #load(byte[], InputStream, OutputStream)} method, then</li>
+ *     <li>Run the {@link #execute()} method to run the program.</li>
+ * </ol>
+ * When the {@code execute()} method returns, it indicates that the program
+ * finished running or it was interrupted by a breakpoint.
+ * The two situations can be checked using the {@link #isComplete()} and
+ * {@link #isInterrupted()} methods, respectively.
+ *
+ */
 public interface Debuggable {
+    /**
+     * Loads the brainfuck machine with the program to execute, along with the input and output.
+     * @param program   The brainfuck program to execute.
+     * @param is    An {@link InputStream} for inputs.
+     * @param os    An {@link OutputStream} for outputs.
+     */
     void load(byte[] program, InputStream is, OutputStream os);
 
     /**
