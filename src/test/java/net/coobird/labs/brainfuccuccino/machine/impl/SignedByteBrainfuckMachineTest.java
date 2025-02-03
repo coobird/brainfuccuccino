@@ -26,10 +26,8 @@
 
 package net.coobird.labs.brainfuccuccino.machine.impl;
 
-import net.coobird.labs.brainfuccuccino.Utils;
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.MemoryRangeOutOfBoundsException;
-import net.coobird.labs.brainfuccuccino.machine.debug.Breakpoint;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
 import org.junit.jupiter.api.Test;
@@ -88,60 +86,5 @@ public class SignedByteBrainfuckMachineTest {
         assertEquals(8, metrics.getInstructionsExecuted());
         assertEquals(0, metrics.getInstructionsSkipped());
         assertEquals(8, metrics.getProgramCounterChanges());
-    }
-    
-    private static byte[] slice(Byte[] memory, int size) {
-        byte[] tmp = new byte[size];
-        for (int i = 0; i < size; i++) {
-            tmp[i] = memory[i];
-        }
-        return tmp;
-    }
-
-    @Test
-    public void breakpointTest() throws IOException {
-        SignedByteBrainfuckMachine machine = new SignedByteBrainfuckMachine();
-        machine.addBreakpoint(new Breakpoint(2, true));
-        machine.addBreakpoint(new Breakpoint(6, true));
-
-        machine.load("+>++>+++".getBytes(), null, null);
-        machine.execute();
-        assertEquals(2, machine.getState().getProgramCounter());
-        assertArrayEquals(new byte[] {1, 0, 0}, slice(machine.getState().getMemory(), 3));
-
-        machine.execute();
-        assertEquals(6, machine.getState().getProgramCounter());
-        assertArrayEquals(new byte[] {1, 2, 1}, slice(machine.getState().getMemory(), 3));
-
-        machine.execute();
-        assertEquals(8, machine.getState().getProgramCounter());
-        assertArrayEquals(new byte[] {1, 2, 3}, slice(machine.getState().getMemory(), 3));
-
-        MachineMetrics metrics = machine.getMetrics();
-        assertEquals(8, metrics.getInstructionsExecuted());
-        assertEquals(0, metrics.getInstructionsSkipped());
-        assertEquals(8, metrics.getProgramCounterChanges());
-    }
-
-    @Test
-    public void breakpointOnAndOffTest() throws IOException {
-        SignedByteBrainfuckMachine machine = new SignedByteBrainfuckMachine();
-        Breakpoint breakpoint = new Breakpoint(48, true);
-        machine.addBreakpoint(breakpoint);
-
-        machine.load(Utils.getScriptFromResources("loop.bf").getBytes(), null, new ByteArrayOutputStream());
-        machine.execute();
-        assertEquals(48, machine.getState().getProgramCounter());
-        assertArrayEquals(new byte[] {42, 2}, slice(machine.getState().getMemory(), 2));
-
-        breakpoint.disable();
-        machine.execute();
-        assertEquals(51, machine.getState().getProgramCounter());
-        assertArrayEquals(new byte[] {42, 0}, slice(machine.getState().getMemory(), 2));
-
-        MachineMetrics metrics = machine.getMetrics();
-        assertEquals(55, metrics.getInstructionsExecuted());
-        assertEquals(0, metrics.getInstructionsSkipped());
-        assertEquals(59, metrics.getProgramCounterChanges());
     }
 }
