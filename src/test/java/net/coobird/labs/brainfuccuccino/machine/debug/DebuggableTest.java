@@ -27,6 +27,7 @@
 package net.coobird.labs.brainfuccuccino.machine.debug;
 
 import net.coobird.labs.brainfuccuccino.Utils;
+import net.coobird.labs.brainfuccuccino.machine.impl.ClassicBrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.impl.SignedByteBrainfuckMachine;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -43,7 +44,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DebuggableTest {
     public static Stream<Arguments> debuggableMachines() {
         return Stream.of(
-                Arguments.of(new SignedByteBrainfuckMachine())
+                Arguments.of(new SignedByteBrainfuckMachine()),
+                Arguments.of(new ClassicBrainfuckMachine())
         );
     }
 

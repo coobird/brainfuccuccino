@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,12 @@
 package net.coobird.labs.brainfuccuccino.machine.impl;
 
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
+import net.coobird.labs.brainfuccuccino.machine.Instruction;
 import net.coobird.labs.brainfuccuccino.machine.MemoryRangeOutOfBoundsException;
 import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException;
+import net.coobird.labs.brainfuccuccino.machine.debug.Breakpoint;
+import net.coobird.labs.brainfuccuccino.machine.debug.BreakpointManager;
+import net.coobird.labs.brainfuccuccino.machine.debug.Debuggable;
 import net.coobird.labs.brainfuccuccino.machine.state.Introspectable;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
@@ -43,7 +47,9 @@ import java.io.OutputStream;
  * Memory cells are bounded at 30000 cells.
  * End-of-stream will write a {@code 0} to the current memory cell on read.
  */
-public class ClassicBrainfuckMachine implements BrainfuckMachine, Introspectable<Byte> {
+public class ClassicBrainfuckMachine
+        implements BrainfuckMachine, Introspectable<Byte>, Debuggable {
+
     private static final int SIZE = 30000;
     private int programCounter = 0;
     private int dataPointer = 0;
@@ -53,6 +59,15 @@ public class ClassicBrainfuckMachine implements BrainfuckMachine, Introspectable
     private long nopInstructions = 0;
     private long programCounterChanges = 0;
 
+    protected BreakpointManager breakpointManager = new BreakpointManager();
+
+    // These fields are populated for current evaluation.
+    // By keeping these states, execution can be interrupted and resumed.
+    private Instruction[] instructions;
+    private byte[] program;
+    private InputStream is;
+    private OutputStream os;
+
     private boolean isDebug = false;
 
     private void printState(byte[] program) {
@@ -61,9 +76,27 @@ public class ClassicBrainfuckMachine implements BrainfuckMachine, Introspectable
         }
     }
 
-    public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
+    protected boolean isComplete = false;
+
+    @Override
+    public boolean isInterrupted() {
+        return breakpointManager.isInterrupted();
+    }
+
+    @Override
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    @Override
+    public void execute() throws IOException {
         while (programCounter < program.length) {
             printState(program);
+
+            if (breakpointManager.isBreakpoint(programCounter)) {
+                return;
+            }
+
             byte instruction = fetchInstruction(program);
             switch (instruction) {
                 case '>':
@@ -140,6 +173,22 @@ public class ClassicBrainfuckMachine implements BrainfuckMachine, Introspectable
             programCounterChanges++;
             programCounter++;
         }
+        isComplete = true;
+    }
+
+    @Override
+    public void load(byte[] program, InputStream is, OutputStream os) {
+        // Pre-translate program into instructions.
+        // This will reduce interpretation time.
+        this.program = program;
+        this.is = is;
+        this.os = os;
+    }
+
+    @Override
+    public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
+        load(program, is, os);
+        execute();
     }
 
     private void checkBounds(int memoryPosition) {
@@ -194,5 +243,20 @@ public class ClassicBrainfuckMachine implements BrainfuckMachine, Introspectable
         return new MachineMetrics(
                 instructionsExecuted, nopInstructions, programCounterChanges
         );
+    }
+
+    @Override
+    public void addBreakpoint(Breakpoint breakpoint) {
+        breakpointManager.addBreakpoint(breakpoint);
+    }
+
+    @Override
+    public void removeBreakpoint(Breakpoint breakpoint) {
+        breakpointManager.removeBreakpoint(breakpoint);
+    }
+
+    @Override
+    public String toString() {
+        return "ClassicBrainfuckMachine{}";
     }
 }
