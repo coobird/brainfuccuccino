@@ -29,6 +29,7 @@ package net.coobird.labs.brainfuccuccino.machine.impl;
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.Instruction;
 import net.coobird.labs.brainfuccuccino.machine.debug.Breakpoint;
+import net.coobird.labs.brainfuccuccino.machine.debug.BreakpointManager;
 import net.coobird.labs.brainfuccuccino.machine.debug.Debuggable;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineStateListener;
 import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException;
@@ -36,11 +37,6 @@ import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * A brainfuck machine with an abstract memory type.
@@ -57,8 +53,7 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine, D
     protected long nopInstructions = 0;
     protected long programCounterChanges = 0;
 
-    protected Set<Breakpoint> breakpoints = new HashSet<>();
-    protected Map<Integer, Breakpoint> breakpointAddresses;
+    protected BreakpointManager breakpointManager = new BreakpointManager();
 
     // These fields are populated for current evaluation.
     // By keeping these states, execution can be interrupted and resumed.
@@ -97,12 +92,11 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine, D
         return instructions;
     }
 
-    protected boolean isInterrupted = false;
     protected boolean isComplete = false;
 
     @Override
     public boolean isInterrupted() {
-        return isInterrupted;
+        return breakpointManager.isInterrupted();
     }
 
     @Override
@@ -117,20 +111,9 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine, D
         }
 
         while (programCounter < instructions.length) {
-            breakpointCheck:
-            // Prevent adversely affecting execution speed by keeping initial check as light as possible.
-            if (!breakpoints.isEmpty() && breakpointAddresses.containsKey(programCounter)) {
-                Breakpoint breakpoint = breakpointAddresses.get(programCounter);
-                if (!breakpoint.isEnabled()) {
-                    break breakpointCheck;
-                }
-
-                if (!isInterrupted) {
-                    isInterrupted = true;
-                    return;
-                }
+            if (breakpointManager.isBreakpoint(programCounter)) {
+                return;
             }
-            isInterrupted = false;
 
             Instruction instruction = instructions[programCounter];
             if (listener != null) {
@@ -281,26 +264,13 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine, D
         memory[dataPointer] = value;
     }
 
-    private void updateBreakpointAddresses() {
-        breakpointAddresses = breakpoints.stream()
-                .collect(Collectors.toMap(Breakpoint::getAddress, Function.identity()));
-    }
-
     @Override
     public void addBreakpoint(Breakpoint breakpoint) {
-        if (breakpoints.contains(breakpoint)) {
-            throw new IllegalArgumentException("Breakpoint already exists.");
-        }
-        breakpoints.add(breakpoint);
-        updateBreakpointAddresses();
+        breakpointManager.addBreakpoint(breakpoint);
     }
 
     @Override
     public void removeBreakpoint(Breakpoint breakpoint) {
-        if (!breakpoints.contains(breakpoint)) {
-            throw new IllegalArgumentException(String.format("Cannot find breakpoint: %s", breakpoint));
-        }
-        breakpoints.remove(breakpoint);
-        updateBreakpointAddresses();
+        breakpointManager.removeBreakpoint(breakpoint);
     }
 }
