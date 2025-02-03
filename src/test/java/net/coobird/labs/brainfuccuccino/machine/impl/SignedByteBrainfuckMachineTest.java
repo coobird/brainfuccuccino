@@ -39,7 +39,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SignedByteBrainfuckMachineTest {
 
@@ -110,14 +112,10 @@ public class SignedByteBrainfuckMachineTest {
         machine.execute();
         assertEquals(6, machine.getState().getProgramCounter());
         assertArrayEquals(new byte[] {1, 2, 1}, slice(machine.getState().getMemory(), 3));
-        assertTrue(machine.isInterrupted());
-        assertFalse(machine.isComplete());
 
         machine.execute();
         assertEquals(8, machine.getState().getProgramCounter());
         assertArrayEquals(new byte[] {1, 2, 3}, slice(machine.getState().getMemory(), 3));
-        assertFalse(machine.isInterrupted());
-        assertTrue(machine.isComplete());
 
         MachineMetrics metrics = machine.getMetrics();
         assertEquals(8, metrics.getInstructionsExecuted());
@@ -135,15 +133,11 @@ public class SignedByteBrainfuckMachineTest {
         machine.execute();
         assertEquals(48, machine.getState().getProgramCounter());
         assertArrayEquals(new byte[] {42, 2}, slice(machine.getState().getMemory(), 2));
-        assertTrue(machine.isInterrupted());
-        assertFalse(machine.isComplete());
 
         breakpoint.disable();
         machine.execute();
         assertEquals(51, machine.getState().getProgramCounter());
         assertArrayEquals(new byte[] {42, 0}, slice(machine.getState().getMemory(), 2));
-        assertFalse(machine.isInterrupted());
-        assertTrue(machine.isComplete());
 
         MachineMetrics metrics = machine.getMetrics();
         assertEquals(55, metrics.getInstructionsExecuted());

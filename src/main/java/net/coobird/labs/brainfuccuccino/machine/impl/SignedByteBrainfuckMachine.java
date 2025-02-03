@@ -148,4 +148,11 @@ public class SignedByteBrainfuckMachine
                 instructionsExecuted, nopInstructions, programCounterChanges
         );
     }
+
+    @Override
+    public String toString() {
+        return "SignedByteBrainfuckMachine{" +
+                "memorySize=" + memorySize +
+                '}';
+    }
 }
