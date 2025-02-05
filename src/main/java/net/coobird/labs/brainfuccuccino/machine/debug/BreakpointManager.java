@@ -32,11 +32,23 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * This class tracks enabled/disabled {@link Breakpoint}s and returns whether
+ * a given address has an active breakpoint through the {@link #isBreakpoint}
+ * method to aid brainfuck machines to determine whether to interrupt program
+ * execution.
+ */
 public final class BreakpointManager {
     private Set<Breakpoint> breakpoints = new HashSet<>();
     private Map<Integer, Breakpoint> breakpointAddresses;
     private boolean isInterrupted = false;
 
+    /**
+     * Returns whether an address has an active breakpoint.
+     * @param address   The address to check the breakpoint on.
+     * @return  {@code true} if an active breakpoint is present,
+     *          {@code false} otherwise.
+     */
     public boolean isBreakpoint(int address) {
         breakpointCheck:
         // Prevent adversely affecting execution speed by keeping initial check as light as possible.
@@ -55,6 +67,11 @@ public final class BreakpointManager {
         return false;
     }
 
+    /**
+     * Returns whether the program execution has been interrupted and stopped.
+     * To resume execution, {@link Debuggable#execute()} should be called.
+     * @return  {@code true} when interrupted, {@code false} otherwise.
+     */
     public boolean isInterrupted() {
         return isInterrupted;
     }
@@ -64,6 +81,11 @@ public final class BreakpointManager {
                 .collect(Collectors.toMap(Breakpoint::getAddress, Function.identity()));
     }
 
+    /**
+     * Adds a breakpoint.
+     * @param breakpoint    A breakpoint.
+     * @throws IllegalArgumentException When an address already has a breakpoint.
+     */
     public void addBreakpoint(Breakpoint breakpoint) {
         if (breakpoints.contains(breakpoint)) {
             throw new IllegalArgumentException(
@@ -74,6 +96,11 @@ public final class BreakpointManager {
         updateBreakpointAddresses();
     }
 
+    /**
+     * Removes a breakpoint.
+     * @param breakpoint    The breakpoint to be removed from current breakpoints.
+     * @throws IllegalArgumentException When the corresponding breakpoint cannot be found.
+     */
     public void removeBreakpoint(Breakpoint breakpoint) {
         if (!breakpoints.contains(breakpoint)) {
             throw new IllegalArgumentException(

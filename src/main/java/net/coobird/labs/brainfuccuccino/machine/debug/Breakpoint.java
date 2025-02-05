@@ -28,6 +28,12 @@ package net.coobird.labs.brainfuccuccino.machine.debug;
 
 import java.util.Objects;
 
+/**
+ * A breakpoint used to interrupt/suspend program execution.
+ * <p>
+ * When implementing a brainfuck machine that's capable of debugging, this
+ * class should be used in conjunction with the {@link BreakpointManager}.
+ */
 public class Breakpoint {
     private final int address;
     private boolean isEnabled = false;
