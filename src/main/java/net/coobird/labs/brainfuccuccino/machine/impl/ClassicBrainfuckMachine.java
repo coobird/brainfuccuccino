@@ -68,14 +68,6 @@ public class ClassicBrainfuckMachine
     private InputStream is;
     private OutputStream os;
 
-    private boolean isDebug = false;
-
-    private void printState(byte[] program) {
-        if (isDebug) {
-            System.out.printf("pc: %d   program[pc]: %c   dp: %d   memory[dp]: %d\n", programCounter, program[programCounter], dataPointer, memory[dataPointer]);
-        }
-    }
-
     protected boolean isComplete = false;
 
     @Override
@@ -95,8 +87,6 @@ public class ClassicBrainfuckMachine
         }
 
         while (programCounter < program.length) {
-            printState(program);
-
             if (breakpointManager.isBreakpoint(programCounter)) {
                 return;
             }
@@ -125,7 +115,6 @@ public class ClassicBrainfuckMachine
                 case '[':
                     if (readValue() == 0) {
                         int depth = 0;
-                        printState(program);
                         while (true) {
                             programCounter++;
                             programCounterChanges++;
@@ -153,7 +142,6 @@ public class ClassicBrainfuckMachine
                         while (true) {
                             programCounter--;
                             programCounterChanges++;
-                            printState(program);
                             if (program[programCounter] == ']') {
                                 depth++;
                             } else if (program[programCounter] == '[') {
