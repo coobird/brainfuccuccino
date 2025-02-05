@@ -90,6 +90,10 @@ public class ClassicBrainfuckMachine
 
     @Override
     public void execute() throws IOException {
+        if (isComplete) {
+            throw new IllegalStateException("Execution already complete.");
+        }
+
         while (programCounter < program.length) {
             printState(program);
 

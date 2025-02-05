@@ -37,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -82,6 +83,31 @@ public class DebuggableTest {
         machine.execute();
         assertFalse(machine.isInterrupted());
         assertTrue(machine.isComplete());
+    }
+
+    @ParameterizedTest
+    @MethodSource("debuggableMachines")
+    public void breakpointOffAndOnTest(Debuggable machine) throws IOException {
+        machine.addBreakpoint(new Breakpoint(47, true));
+
+        Breakpoint breakpoint = new Breakpoint(48, false);
+        machine.addBreakpoint(breakpoint);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        machine.load(Utils.getScriptFromResources("loop.bf").getBytes(), null, baos);
+        machine.execute(); // should stop at 47
+        machine.execute(); // should stop at 47
+
+        breakpoint.enable();
+        machine.execute(); // should stop at 48
+        machine.execute(); // should stop at 47
+        breakpoint.disable();
+        machine.execute(); // should continue to end of program
+
+        assertFalse(machine.isInterrupted());
+        assertTrue(machine.isComplete());
+        assertEquals("*", baos.toString());
     }
 
     @ParameterizedTest
@@ -142,6 +168,17 @@ public class DebuggableTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> machine.removeBreakpoint(breakpoint)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("debuggableMachines")
+    public void executeBeyondEndOfProgram(Debuggable machine) throws IOException {
+        machine.load(Utils.getScriptFromResources("loop.bf").getBytes(), null, new ByteArrayOutputStream());
+        machine.execute();
+        assertThrows(
+                IllegalStateException.class,
+                () -> machine.execute()
         );
     }
 }
