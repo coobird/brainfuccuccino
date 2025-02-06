@@ -33,28 +33,57 @@ import java.util.Objects;
  * <p>
  * When implementing a brainfuck machine that's capable of debugging, this
  * class should be used in conjunction with the {@link BreakpointManager}.
+ * <p>
+ * A note about breakpoint equality:
+ * A breakpoint is considered equivalent when the address it is associated
+ * with is the same. Whether it is enabled or not is not considered.
  */
 public class Breakpoint {
     private final int address;
     private boolean isEnabled = false;
 
+    /**
+     * Instantiates a breakpoint at an address, and specify whether it is
+     * enabled or not.
+     * @param address   Address to associate with the breakpoint.
+     * @param isEnabled Whether to enable the breakpoint.
+     */
     public Breakpoint(int address, boolean isEnabled) {
         this.address = address;
         this.isEnabled = isEnabled;
     }
 
+    /**
+     * Address for this breakpoint.
+     * @return  Address for this breakpoint.
+     */
     public int getAddress() {
         return address;
     }
 
+    /**
+     * Indicates whether this breakpoint is enabled or not.
+     * <p>
+     * If enabled, the brainfuck machine should interrupt execution at the
+     * address associated with this breakpoint.
+     *
+     * @return  {@code true} when the breakpoint is enabled, {@code false}
+     * otherwise.
+     */
     public boolean isEnabled() {
         return isEnabled;
     }
 
+    /**
+     * Enables this breakpoint.
+     */
     public void enable() {
         this.isEnabled = true;
     }
 
+    /**
+     * Disables this breakpoint.
+     */
     public void disable() {
         this.isEnabled = false;
     }

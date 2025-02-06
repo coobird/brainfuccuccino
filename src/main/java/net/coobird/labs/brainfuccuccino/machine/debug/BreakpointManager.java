@@ -37,6 +37,9 @@ import java.util.stream.Collectors;
  * a given address has an active breakpoint through the {@link #isBreakpoint}
  * method to aid brainfuck machines to determine whether to interrupt program
  * execution.
+ * <p>
+ * Each instance of a brainfuck machine must use a separate instance of this
+ * manager.
  */
 public final class BreakpointManager {
     private Set<Breakpoint> breakpoints = new HashSet<>();

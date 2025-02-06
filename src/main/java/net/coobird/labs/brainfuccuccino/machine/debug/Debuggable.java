@@ -38,6 +38,7 @@ import java.io.OutputStream;
  *     <li>Load the program with the {@link #load(byte[], InputStream, OutputStream)} method, then</li>
  *     <li>Run the {@link #execute()} method to run the program.</li>
  * </ol>
+ * <p>
  * When the {@code execute()} method returns, it indicates that the program
  * finished running or it was interrupted by a breakpoint.
  * The two situations can be checked using the {@link #isComplete()} and
