@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,9 @@ package net.coobird.labs.brainfuccuccino.machine.impl;
 
 import net.coobird.labs.brainfuccuccino.machine.BrainfuckMachine;
 import net.coobird.labs.brainfuccuccino.machine.Instruction;
+import net.coobird.labs.brainfuccuccino.machine.debug.Breakpoint;
+import net.coobird.labs.brainfuccuccino.machine.debug.BreakpointManager;
+import net.coobird.labs.brainfuccuccino.machine.debug.Debuggable;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineStateListener;
 import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException;
 
@@ -40,7 +43,7 @@ import java.io.OutputStream;
  * The program is bounded (finite).
  * @param <T>   Type used by the memory cells in the brainfuck machine.
  */
-public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
+public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine, Debuggable {
     protected int programCounter = 0;
     protected int dataPointer = 0;
     protected final T[] memory;
@@ -49,6 +52,15 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
     protected long instructionsExecuted = 0;
     protected long nopInstructions = 0;
     protected long programCounterChanges = 0;
+
+    protected BreakpointManager breakpointManager = new BreakpointManager();
+
+    // These fields are populated for current evaluation.
+    // By keeping these states, execution can be interrupted and resumed.
+    private Instruction[] instructions;
+    private byte[] program;
+    private InputStream is;
+    private OutputStream os;
 
     protected AbstractBrainfuckMachine(T[] memory) {
         this(memory, null);
@@ -80,13 +92,29 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
         return instructions;
     }
 
+    protected boolean isComplete = false;
+
     @Override
-    public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
-        // Pre-translate program into instructions.
-        // This will reduce interpretation time.
-        Instruction[] instructions = bytesToInstructions(program);
+    public boolean isInterrupted() {
+        return breakpointManager.isInterrupted();
+    }
+
+    @Override
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    @Override
+    public void execute() throws IOException {
+        if (isComplete) {
+            throw new IllegalStateException("Execution already complete.");
+        }
 
         while (programCounter < instructions.length) {
+            if (breakpointManager.isBreakpoint(programCounter)) {
+                return;
+            }
+
             Instruction instruction = instructions[programCounter];
             if (listener != null) {
                 listener.nextInstruction(
@@ -176,6 +204,23 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
             programCounterChanges++;
             programCounter++;
         }
+        isComplete = true;
+    }
+
+    @Override
+    public void load(byte[] program, InputStream is, OutputStream os) {
+        // Pre-translate program into instructions.
+        // This will reduce interpretation time.
+        instructions = bytesToInstructions(program);
+        this.program = program;
+        this.is = is;
+        this.os = os;
+    }
+
+    @Override
+    public void evaluate(byte[] program, InputStream is, OutputStream os) throws IOException {
+        load(program, is, os);
+        execute();
     }
 
     /**
@@ -217,5 +262,15 @@ public abstract class AbstractBrainfuckMachine<T> implements BrainfuckMachine {
      */
     protected void setValueToMemory(T value) {
         memory[dataPointer] = value;
+    }
+
+    @Override
+    public void addBreakpoint(Breakpoint breakpoint) {
+        breakpointManager.addBreakpoint(breakpoint);
+    }
+
+    @Override
+    public void removeBreakpoint(Breakpoint breakpoint) {
+        breakpointManager.removeBreakpoint(breakpoint);
     }
 }
