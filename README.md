@@ -53,6 +53,10 @@ This allows quick experimentation with brainfuck programs that involve I/O.
 [1]: https://en.wikipedia.org/wiki/Brainfuck
 [2]: https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/api.html
 
+# Requirements
+
+Java 8 or higher.
+
 # Maven
 
 Brainfuccuccino is not yet available on Maven Central.
