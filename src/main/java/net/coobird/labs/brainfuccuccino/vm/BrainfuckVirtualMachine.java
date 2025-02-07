@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,6 +50,10 @@ import java.util.List;
  * The machine's memory cells are {@code byte}s and consist of an array of 30,000 elements.
  * <p>
  * For input and output, a byte of data will be exchanged via {@link InputStream} and {@link OutputStream}, respectively.
+ * <p>
+ * Note on the {@link #getState()} and {@link #getMetrics()} method implementations:
+ * This method can return inconsistent state as the virtual machine memory is
+ * not copied in a thread-safe manner.
  */
 public class BrainfuckVirtualMachine implements Introspectable<Byte> {
     private static final int SIZE = 30000;
@@ -64,10 +68,22 @@ public class BrainfuckVirtualMachine implements Introspectable<Byte> {
     private final InputStream is;
     private final OutputStream os;
 
+    /**
+     * Instantiate a brainfuck virtual machine for given instructions and input/output.
+     * @param instructions  Brainfuck virtual machine instructions to execute.
+     * @param is    An {@link InputStream} for inputs.
+     * @param os    An {@link OutputStream} for outputs.
+     */
     public BrainfuckVirtualMachine(List<Instruction> instructions, InputStream is, OutputStream os) {
         this(instructions.toArray(new Instruction[0]), is, os);
     }
 
+    /**
+     * Instantiate a brainfuck virtual machine for given instructions and input/output.
+     * @param instructions  Brainfuck virtual machine instructions to execute.
+     * @param is    An {@link InputStream} for inputs.
+     * @param os    An {@link OutputStream} for outputs.
+     */
     public BrainfuckVirtualMachine(Instruction[] instructions, InputStream is, OutputStream os) {
         this.instructions = instructions;
         this.is = is;
@@ -86,6 +102,10 @@ public class BrainfuckVirtualMachine implements Introspectable<Byte> {
      * write  - write value of current memory cell to output port
      */
 
+    /**
+     * Execute loaded brainfuck virtual machine instructions.
+     * @throws IOException  When an exception is thrown during execution.
+     */
     public void execute() throws IOException {
         while (programCounter < instructions.length) {
             Instruction instruction = instructions[programCounter];

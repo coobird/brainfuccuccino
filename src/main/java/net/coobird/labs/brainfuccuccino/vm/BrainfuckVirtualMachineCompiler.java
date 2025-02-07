@@ -36,7 +36,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BrainfuckVirtualMachineCompiler {
+/**
+ * A brainfuck compiler for the {@link BrainfuckVirtualMachine}.
+ * <p>
+ * Optimized instructions for the {@code BrainfuckVirtualMachine} can be
+ * emitted by specifying a positive optimization level when calling the
+ * {@link #compile(String, int)} method.
+ */
+public final class BrainfuckVirtualMachineCompiler {
     private static final int UNKNOWN_ADDRESS = -1;
 
     private static List<Instruction> verifyInstructions(List<Instruction> instructions) {
@@ -48,10 +55,26 @@ public class BrainfuckVirtualMachineCompiler {
         return instructions;
     }
 
+    /**
+     * Compiles a brainfuck program for the {@code BrainfuckVirtualMachine}
+     * without optimization.
+     * @param program   The brainfuck program to compile.
+     * @return  The instructions for the {@code BrainfuckVirtualMachine}.
+     */
     public List<Instruction> compile(String program) {
         return compile(program, 0);
     }
 
+    /**
+     * Compiles a brainfuck program for the {@code BrainfuckVirtualMachine}
+     * with specified level of optimization.
+     * @param program   The brainfuck program to compile.
+     * @param optimizationLevel The optimization level.
+     *                          {@code 0} for no optimization, and higher
+     *                          optimization for higher values.
+     *                          Must be a non-negative value.
+     * @return  The instructions for the {@code BrainfuckVirtualMachine}.
+     */
     public List<Instruction> compile(String program, int optimizationLevel) {
         if (optimizationLevel == 0) {
             return verifyInstructions(compileWithoutOptimization(program));
@@ -111,6 +134,7 @@ public class BrainfuckVirtualMachineCompiler {
                     address++;
                     break;
                 default:
+                    // Any unrecognized character is ignored.
                     break;
             }
         }
@@ -223,6 +247,7 @@ public class BrainfuckVirtualMachineCompiler {
                     }
                     break;
                 default:
+                    // Any unrecognized character is ignored.
                     break;
             }
         }
