@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@
 package net.coobird.labs.brainfuccuccino.vm;
 
 import net.coobird.labs.brainfuccuccino.Utils;
+import net.coobird.labs.brainfuccuccino.machine.MemoryRangeOutOfBoundsException;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
 import net.coobird.labs.brainfuccuccino.vm.model.Instruction;
@@ -40,11 +41,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BrainfuckVirtualMachineTest {
     private final BrainfuckVirtualMachineCompiler compiler = new BrainfuckVirtualMachineCompiler();
@@ -147,6 +150,50 @@ public class BrainfuckVirtualMachineTest {
         ).execute();
 
         assertEquals("こんにちは世界！", baos.toString());
+    }
+
+    public static Stream<Arguments> memoryInRangeCases() {
+        return Stream.of(
+                Arguments.of("+.", 0),
+                Arguments.of("+.", 1),
+                Arguments.of(">+.", 0),
+                Arguments.of(">+.", 1),
+                Arguments.of(">>+.", 0),
+                Arguments.of(">>+.", 1)
+        );
+    }
+
+    @ParameterizedTest(name = "program = {0}, optimizationLevel = {1}")
+    @MethodSource("memoryInRangeCases")
+    public void whenMemoryPositionWithinSizeThenCorrectValueInMemoryCell(String program, int optimizationLevel) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        List<Instruction> instructions = compiler.compile(program, optimizationLevel);
+
+        new BrainfuckVirtualMachine(instructions, null, os).execute();
+
+        byte[] actualOutput = os.toByteArray();
+        assertEquals(1, actualOutput.length);
+        assertEquals((byte) 1, actualOutput[0]);
+    }
+
+    public static Stream<Arguments> memoryOutOfRangeCases() {
+        final String moveRightOutOfRange = String.join("", Collections.nCopies(30000, ">"));
+        return Stream.of(
+                Arguments.of("<", 0),
+                Arguments.of("<", 1),
+                Arguments.of(moveRightOutOfRange, 0),
+                Arguments.of(moveRightOutOfRange, 1)
+        );
+    }
+
+    @ParameterizedTest(name = "program = {0}, optimizationLevel = {1}")
+    @MethodSource("memoryOutOfRangeCases")
+    public void whenMemoryOutOfRangeThenExceptionThrown(String program, int optimizationLevel) {
+        List<Instruction> instructions = compiler.compile(program, optimizationLevel);
+        assertThrows(
+                MemoryRangeOutOfBoundsException.class,
+                () -> new BrainfuckVirtualMachine(instructions, null, null).execute()
+        );
     }
 
     @Test

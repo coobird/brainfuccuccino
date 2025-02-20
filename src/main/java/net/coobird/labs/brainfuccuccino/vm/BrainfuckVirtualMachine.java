@@ -26,6 +26,7 @@
 
 package net.coobird.labs.brainfuccuccino.vm;
 
+import net.coobird.labs.brainfuccuccino.machine.MemoryRangeOutOfBoundsException;
 import net.coobird.labs.brainfuccuccino.machine.state.Introspectable;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineMetrics;
 import net.coobird.labs.brainfuccuccino.machine.state.MachineState;
@@ -114,11 +115,27 @@ public class BrainfuckVirtualMachine implements Introspectable<Byte> {
             switch (instruction.getOpcode()) {
                 case MADD:
                     dataPointer += operand;
+                    if (dataPointer >= SIZE) {
+                        throw new MemoryRangeOutOfBoundsException(
+                                String.format(
+                                        "Memory cell out of bounds: <%s>",
+                                        dataPointer
+                                )
+                        );
+                    }
                     programCounter++;
                     programCounterChanges++;
                     break;
                 case MSUB:
                     dataPointer -= operand;
+                    if (dataPointer < 0) {
+                        throw new MemoryRangeOutOfBoundsException(
+                                String.format(
+                                        "Memory cell out of bounds: <%s>",
+                                        dataPointer
+                                )
+                        );
+                    }
                     programCounter++;
                     programCounterChanges++;
                     break;
