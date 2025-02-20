@@ -3,9 +3,9 @@
 Brainfuccuccino is a Java scripting engine which allows [brainfuck][1] programs to be embedded and run in Java applications.
 It conforms to the [Java Scripting API][2] (JSR 223).
 
-# Usage
+## Usage
 
-## Using Brainfuccuccino via the Java Scripting API
+### Using Brainfuccuccino via the Java Scripting API
 
 One key feature of Brainfuccuccino is that it conforms to the [Java Scripting API][2] (JSR 223).
 This allows using the `ScriptEngine` interface to execute brainfuck programs:
@@ -29,7 +29,7 @@ bfScriptEngine.eval(
 System.out.println(writer.toString());
 ```
 
-## Using Brainfuccuccino directly
+### Using Brainfuccuccino directly
 
 Another straightforward option to run brainfuck programs is to call Brainfuccuccino directly.
 
@@ -53,11 +53,11 @@ This allows quick experimentation with brainfuck programs that involve I/O.
 [1]: https://en.wikipedia.org/wiki/Brainfuck
 [2]: https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/api.html
 
-# Requirements
+## Requirements
 
 Java 8 or higher.
 
-# Maven
+## Maven
 
 Brainfuccuccino is not yet available on Maven Central.
 Currently, it is only available as SNAPSHOT artifacts on OSSRH repository provided by Sonatype.
@@ -94,11 +94,11 @@ Second, add the following the `<dependencies>` section of the POM:
 </dependency>
 ```
 
-# Disclaimer
+## Disclaimer
 
 _Brainfuccuccino is very early in its development.
 The APIs are subject to change at any time._
 
-# License
+## License
 
 Brainfuccuccino is released under the MIT License.
