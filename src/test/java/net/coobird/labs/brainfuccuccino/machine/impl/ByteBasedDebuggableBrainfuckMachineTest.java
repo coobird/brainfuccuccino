@@ -85,6 +85,36 @@ public class ByteBasedDebuggableBrainfuckMachineTest {
 
     @ParameterizedTest
     @MethodSource("debuggableMachines")
+    public <T extends Debuggable & Introspectable<Byte>> void breakpointWithCommentsTest(T machine) throws IOException {
+        machine.addBreakpoint(new Breakpoint(2, true));
+        machine.addBreakpoint(new Breakpoint(9, true));
+        machine.addBreakpoint(new Breakpoint(13, true));
+
+        machine.load("Comment+>++>+++".getBytes(), null, null);
+        machine.execute();
+        assertEquals(2, machine.getState().getProgramCounter());
+        assertArrayEquals(new byte[] {0, 0, 0}, slice(machine.getState().getMemory(), 3));
+
+        machine.execute();
+        assertEquals(9, machine.getState().getProgramCounter());
+        assertArrayEquals(new byte[] {1, 0, 0}, slice(machine.getState().getMemory(), 3));
+
+        machine.execute();
+        assertEquals(13, machine.getState().getProgramCounter());
+        assertArrayEquals(new byte[] {1, 2, 1}, slice(machine.getState().getMemory(), 3));
+
+        machine.execute();
+        assertEquals(15, machine.getState().getProgramCounter());
+        assertArrayEquals(new byte[] {1, 2, 3}, slice(machine.getState().getMemory(), 3));
+
+        MachineMetrics metrics = machine.getMetrics();
+        assertEquals(8, metrics.getInstructionsExecuted());
+        assertEquals(7, metrics.getInstructionsSkipped());
+        assertEquals(15, metrics.getProgramCounterChanges());
+    }
+
+    @ParameterizedTest
+    @MethodSource("debuggableMachines")
     public <T extends Debuggable & Introspectable<Byte>> void breakpointOnAndOffTest(T machine) throws IOException {
         Breakpoint breakpoint = new Breakpoint(48, true);
         machine.addBreakpoint(breakpoint);
