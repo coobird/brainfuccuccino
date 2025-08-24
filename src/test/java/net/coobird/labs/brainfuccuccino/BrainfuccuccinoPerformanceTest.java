@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,12 +38,15 @@ import java.io.IOException;
  * A performance test for the different "flavors" of the Brainfuck machines include in Brainfuccuccino.
  */
 public class BrainfuccuccinoPerformanceTest {
+    private static final String BF_SOURCE = "dots.bf";
+    private static final int TEST_ITERATIONS = 100000;
+
     @Test
     public void dots() throws IOException {
-        String program = Utils.getScriptFromResources("dots.bf");
+        String program = Utils.getScriptFromResources(BF_SOURCE);
         for (Flavor flavor : Flavor.values()) {
             long startTime = System.currentTimeMillis();
-            for (int iteration = 0; iteration < 100000; iteration++) {
+            for (int iteration = 0; iteration < TEST_ITERATIONS; iteration++) {
                 Brainfuccuccino.customize()
                         .flavor(flavor)
                         .attach(new ByteArrayOutputStream())
@@ -56,14 +59,14 @@ public class BrainfuccuccinoPerformanceTest {
 
     @Test
     public void dotsVirtualMachine() throws IOException {
-        String program = Utils.getScriptFromResources("dots.bf");
+        String program = Utils.getScriptFromResources(BF_SOURCE);
 
         long startTime = System.currentTimeMillis();
         Instruction[] instructions = new BrainfuckVirtualMachineCompiler()
                 .compile(program)
                 .toArray(new Instruction[0]);
 
-        for (int iteration = 0; iteration < 100000; iteration++) {
+        for (int iteration = 0; iteration < TEST_ITERATIONS; iteration++) {
             new BrainfuckVirtualMachine(
                     instructions,
                     null,
@@ -76,14 +79,14 @@ public class BrainfuccuccinoPerformanceTest {
 
     @Test
     public void dotsVirtualMachineWithOptimization() throws IOException {
-        String program = Utils.getScriptFromResources("dots.bf");
+        String program = Utils.getScriptFromResources(BF_SOURCE);
 
         long startTime = System.currentTimeMillis();
         Instruction[] instructions = new BrainfuckVirtualMachineCompiler()
                 .compile(program, 1)
                 .toArray(new Instruction[0]);
 
-        for (int iteration = 0; iteration < 100000; iteration++) {
+        for (int iteration = 0; iteration < TEST_ITERATIONS; iteration++) {
             new BrainfuckVirtualMachine(
                     instructions,
                     null,
