@@ -56,6 +56,12 @@ public interface Debuggable {
 
     /**
      * Starts or resumes execution of the brainfuck machine.
+     * <p>
+     * Execution will terminate when the end of the program or breakpoint is
+     * encountered.
+     * <p>
+     * When a breakpoint is encountered, the execution returns immediately,
+     * without the instruction at the breakpoint's address being executed.
      * @throws IOException  When an exception is thrown during execution.
      */
     void execute() throws IOException;

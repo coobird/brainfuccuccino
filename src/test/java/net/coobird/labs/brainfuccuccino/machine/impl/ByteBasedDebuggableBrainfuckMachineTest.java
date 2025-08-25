@@ -67,14 +67,17 @@ public class ByteBasedDebuggableBrainfuckMachineTest {
         machine.load("+>++>+++".getBytes(), null, null);
         machine.execute();
         assertEquals(2, machine.getState().getProgramCounter());
+        assertEquals(1, machine.getState().getDataPointer());
         assertArrayEquals(new byte[] {1, 0, 0}, slice(machine.getState().getMemory(), 3));
 
         machine.execute();
         assertEquals(6, machine.getState().getProgramCounter());
+        assertEquals(2, machine.getState().getDataPointer());
         assertArrayEquals(new byte[] {1, 2, 1}, slice(machine.getState().getMemory(), 3));
 
         machine.execute();
         assertEquals(8, machine.getState().getProgramCounter());
+        assertEquals(2, machine.getState().getDataPointer());
         assertArrayEquals(new byte[] {1, 2, 3}, slice(machine.getState().getMemory(), 3));
 
         MachineMetrics metrics = machine.getMetrics();
@@ -93,18 +96,22 @@ public class ByteBasedDebuggableBrainfuckMachineTest {
         machine.load("Comment+>++>+++".getBytes(), null, null);
         machine.execute();
         assertEquals(2, machine.getState().getProgramCounter());
+        assertEquals(0, machine.getState().getDataPointer());
         assertArrayEquals(new byte[] {0, 0, 0}, slice(machine.getState().getMemory(), 3));
 
         machine.execute();
         assertEquals(9, machine.getState().getProgramCounter());
+        assertEquals(1, machine.getState().getDataPointer());
         assertArrayEquals(new byte[] {1, 0, 0}, slice(machine.getState().getMemory(), 3));
 
         machine.execute();
         assertEquals(13, machine.getState().getProgramCounter());
+        assertEquals(2, machine.getState().getDataPointer());
         assertArrayEquals(new byte[] {1, 2, 1}, slice(machine.getState().getMemory(), 3));
 
         machine.execute();
         assertEquals(15, machine.getState().getProgramCounter());
+        assertEquals(2, machine.getState().getDataPointer());
         assertArrayEquals(new byte[] {1, 2, 3}, slice(machine.getState().getMemory(), 3));
 
         MachineMetrics metrics = machine.getMetrics();
