@@ -3,7 +3,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2021-2024 Chris Kroells
+ * Copyright (c) 2021-2025 Chris Kroells
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,15 +26,21 @@
 
 package net.coobird.labs.brainfuccuccino.vm;
 
+import net.coobird.labs.brainfuccuccino.machine.ProgramRangeOutOfBoundsException;
 import net.coobird.labs.brainfuccuccino.vm.model.Instruction;
 import net.coobird.labs.brainfuccuccino.vm.model.Opcode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BrainfuckVirtualMachineCompilerTest {
     private BrainfuckVirtualMachineCompiler compiler;
@@ -78,6 +84,31 @@ public class BrainfuckVirtualMachineCompilerTest {
                         new Instruction(Opcode.MADD, 1),
                         new Instruction(Opcode.ADD, 3)
                 ), instructions
+        );
+    }
+
+    static Stream<Arguments> optimizationLevels() {
+        return Stream.of(
+                Arguments.of(0),
+                Arguments.of(1)
+        );
+    }
+
+    @ParameterizedTest(name = "optimizationLevel = {0}")
+    @MethodSource("optimizationLevels")
+    public void matchingBeginLoopIsMissing(int optimizationLevel) {
+        assertThrows(
+                ProgramRangeOutOfBoundsException.class,
+                () -> compiler.compile("+]", optimizationLevel)
+        );
+    }
+
+    @ParameterizedTest(name = "optimizationLevel = {0}")
+    @MethodSource("optimizationLevels")
+    public void matchingEndLoopIsMissing(int optimizationLevel) {
+        assertThrows(
+                ProgramRangeOutOfBoundsException.class,
+                () -> compiler.compile("[+", optimizationLevel)
         );
     }
 }
